@@ -3,13 +3,13 @@ apt update
 yes | apt install python3-pip python3-dev build-essential libssl-dev libffi-dev python3-setuptools
 yes | apt-get install python3-pip python3-dev nginx
 yes | apt install python3-venv
-mkdir /etc/openvpn/
-cd /etc/vpnapiproject/ || return
+mkdir /etc/openvpn/vpnapiproject
+cd /etc/openvpn/vpnapiproject/ || return
 python3 -m venv vpnapiprojectenv
 source vpnapiprojectenv/bin/activate
 pip install wheel
 pip install gunicorn flask
-touch /etc/vpnapiproject/api.py
+touch /etc/openvpn/vpnapiproject/api.py
 echo "#!/usr/bin/env python3
 import subprocess
 import telnetlib
@@ -158,13 +158,13 @@ def removeprofile():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0')" >>/etc/vpnapiproject/api.py
+    app.run(host='0.0.0.0')" >>/etc/openvpn/vpnapiproject/api.py
 ufw allow 5000
-touch /etc/vpnapiproject/wsgi.py
+touch /etc/openvpn/vpnapiproject/wsgi.py
 echo "from vpnapiproject import app
 
 if __name__ == \"__main__\":
-    app.run()" >>/etc/vpnapiproject/wsgi.py
+    app.run()" >>/etc/openvpn/vpnapiproject/wsgi.py
 deactivate
 touch /etc/systemd/system/vpnservice.service
 echo"[Unit]
@@ -174,9 +174,9 @@ After=network.target
 [Service]
 User=root
 Group=www-data
-WorkingDirectory=/etc/vpnapiproject
-Environment=\"PATH=/etc/vpnapiproject/vpnapiprojectenv/bin\"
-ExecStart=/etc/vpnapiproject/vpnapiprojectenv/bin/gunicorn --workers 3 --bind unix:vpnapiproject.sock -m 007 wsgi:app
+WorkingDirectory=/etc/openvpn/vpnapiproject
+Environment=\"PATH=/etc/openvpn/vpnapiproject/vpnapiprojectenv/bin\"
+ExecStart=/etc/openvpn/vpnapiproject/vpnapiprojectenv/bin/gunicorn --workers 3 --bind unix:vpnapiproject.sock -m 007 wsgi:app
 
 [Install]
 WantedBy=multi-user.target" >>/etc/systemd/system/vpnservice.service

@@ -77,7 +77,7 @@ def decryptFromBase64(key, iv, source):
     return decrypt(key, iv, source_bytes).decode('utf-8')
 
 
-@app.route('/')
+@app.route('/',methods=['GET'])
 def index():
     return \"Hello World!\"
 

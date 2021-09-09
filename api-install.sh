@@ -9,6 +9,7 @@ python3 -m venv vpnapiprojectenv
 source vpnapiprojectenv/bin/activate
 pip install wheel
 pip install gunicorn flask
+echo "create file api"
 touch /etc/openvpn/vpnapiproject/api.py
 echo "#!/usr/bin/env python3
 import subprocess
@@ -160,12 +161,14 @@ def removeprofile():
 if __name__ == '__main__':
     app.run(host='0.0.0.0')" >>/etc/openvpn/vpnapiproject/api.py
 ufw allow 5000
+echo "create file wsgi"
 touch /etc/openvpn/vpnapiproject/wsgi.py
 echo "from vpnapiproject import app
 
 if __name__ == \"__main__\":
     app.run()" >>/etc/openvpn/vpnapiproject/wsgi.py
 deactivate
+echo "create file vpnservice"
 touch /etc/systemd/system/vpnservice.service
 echo"[Unit]
 Description=Gunicorn instance to serve myproject
@@ -180,9 +183,11 @@ ExecStart=/etc/openvpn/vpnapiproject/vpnapiprojectenv/bin/gunicorn --workers 3 -
 
 [Install]
 WantedBy=multi-user.target" >>/etc/systemd/system/vpnservice.service
+echo "run vpnservice"
 systemctl start vpnservice
 systemctl enable vpnservice
 systemctl status vpnservice
+echo "/etc/nginx/sites-available/vpnapiprojecte"
 touch /etc/nginx/sites-available/vpnapiproject
 PUBLICIP=$(curl -s https://api.ipify.org)
 echo "server {
@@ -195,6 +200,7 @@ echo "server {
     }
 }"
 ln -s /etc/nginx/sites-available/vpnapiproject /etc/nginx/sites-enabled
+echo "edit nginx config"
 rm /etc/nginx/nginx.conf
 touch /etc/nginx/nginx.conf
 echo "user root;

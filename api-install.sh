@@ -3,16 +3,16 @@ apt update
 yes | apt install python3-pip python3-dev build-essential libssl-dev libffi-dev python3-setuptools
 yes | apt-get install python3-pip python3-dev nginx
 yes | apt install python3-venv
-mkdir -p /etc/openvpn
-mkdir -p /etc/openvpn/vpnapiproject
-cd /etc/openvpn/vpnapiproject/ || return
+mkdir -p /root/openvpn
+mkdir -p /root/openvpn/vpnapiproject
+cd /root/openvpn/vpnapiproject/ || return
 python3 -m venv vpnapiprojectenv
 source vpnapiprojectenv/bin/activate
 pip install wheel
 pip install gunicorn flask
 pip install pycrypto
 echo "create file api"
-touch /etc/openvpn/vpnapiproject/api.py
+touch /root/openvpn/vpnapiproject/api.py
 echo "#!/usr/bin/env python3
 import subprocess
 import telnetlib
@@ -161,17 +161,17 @@ def removeprofile():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0')" >>/etc/openvpn/vpnapiproject/api.py
+    app.run(host='0.0.0.0')" >>/root/openvpn/vpnapiproject/api.py
 ufw allow 5000
 echo "create file wsgi"
-touch /etc/openvpn/vpnapiproject/wsgi.py
+touch /root/openvpn/vpnapiproject/wsgi.py
 echo "from api import app
 
 if __name__ == \"__main__\":
-    app.run()" >>/etc/openvpn/vpnapiproject/wsgi.py
+    app.run()" >>/root/openvpn/vpnapiproject/wsgi.py
 deactivate
 echo "create file vpnservice"
-cat > /etc/systemd/system/vpnservice.service << EOF
+cat > /root/systemd/system/vpnservice.service << EOF
 [Unit]
 Description=Gunicorn instance to server vpnservice
 After=network.target
@@ -179,9 +179,9 @@ After=network.target
 [Service]
 User=root
 Group=www-data
-WorkingDirectory=/etc/openvpn/vpnapiproject
-Environment="PATH=/etc/openvpn/vpnapiproject/vpnapiprojectenv/bin"
-ExecStart=/etc/openvpn/vpnapiproject/vpnapiprojectenv/bin/gunicorn --workers 3 --bind unix:vpnapiproject.sock -m 007 wsgi:app
+WorkingDirectory=/root/openvpn/vpnapiproject
+Environment="PATH=/root/openvpn/vpnapiproject/vpnapiprojectenv/bin"
+ExecStart=/root/openvpn/vpnapiproject/vpnapiprojectenv/bin/gunicorn --workers 3 --bind unix:vpnapiproject.sock -m 007 wsgi:app
 
 [Install]
 WantedBy=multi-user.target
@@ -200,7 +200,7 @@ systemctl enable vpnservice
 #
 #    location / {
 #        include proxy_params;
-#        proxy_pass http://unix:/etc/openvpn/vpnapiproject/vpnapiproject.sock;
+#        proxy_pass http://unix:/root/openvpn/vpnapiproject/vpnapiproject.sock;
 #    }
 #}"
 #ln -s /etc/nginx/sites-available/vpnapiproject /etc/nginx/sites-enabled
@@ -294,12 +294,12 @@ systemctl enable vpnservice
 ##}" >>/etc/nginx/nginx.conf
 #nginx -t
 #ufw allow 'Nginx Full'
-##cd /etc/openvpn/vpnapiproject/ || return
+##cd /root/openvpn/vpnapiproject/ || return
 ##source vpnapiprojectenv/bin/activate
 ##pip install pycrypto
 ##deactivate
 ##systemctl restart vpnservice
-#rm /etc/nginx/sites-enabled/default
+#rm /root/nginx/sites-enabled/default
 #systemctl restart nginx
 systemctl status vpnservice
 exit

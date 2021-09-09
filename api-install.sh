@@ -177,6 +177,7 @@ else
     echo "vpnservice.service not exists."
     exit
 fi
+sudo su
 echo"[Unit]
 Description=Gunicorn instance to serve myproject
 After=network.target
@@ -191,6 +192,7 @@ ExecStart=/etc/openvpn/vpnapiproject/vpnapiprojectenv/bin/gunicorn --workers 3 -
 [Install]
 WantedBy=multi-user.target" >>/etc/systemd/system/vpnservice.service
 echo "run vpnservice"
+systemctl daemon-reload
 systemctl start vpnservice
 systemctl enable vpnservice
 systemctl status vpnservice

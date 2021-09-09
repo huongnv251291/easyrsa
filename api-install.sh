@@ -8,9 +8,9 @@ mkdir -p /etc/openvpn/vpnapiproject
 cd /etc/openvpn/vpnapiproject/ || return
 python3 -m venv vpnapiprojectenv
 source vpnapiprojectenv/bin/activate
-pip install pycrypto
 pip install wheel
 pip install gunicorn flask
+pip install pycrypto
 echo "create file api"
 touch /etc/openvpn/vpnapiproject/api.py
 echo "#!/usr/bin/env python3

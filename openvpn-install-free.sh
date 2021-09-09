@@ -1111,18 +1111,19 @@ CountUser().run()" >>/etc/openvpn/countuser.py
     chmod +x /etc/openvpn/countuser.sh
     echo "#!/bin/bash
 python3 -i  /etc/openvpn/countuser.py" >>/etc/openvpn/countuser.sh
-    touch /lib/systemd/system/countuser.service
-    echo "[Unit]
+    cat >/etc/systemd/system/countuser.service <<EOF
+[Unit]
 Description=CountUser Service
 
 [Service]
 ExecStart=/etc/openvpn/countuser.sh
 
 [Install]
-WantedBy=multi-user.target" >>/lib/systemd/system/countuser.service
+WantedBy=multi-user.target
+EOF
     systemctl daemon-reload
-    systemctl enable countuser.service
-    systemctl start countuser.service
+    systemctl enable countuser
+    systemctl start countuser
     touch /etc/openvpn/pushInfoToMainSv.py
     echo "#!/usr/bin/env python3
 import requests
@@ -1159,7 +1160,14 @@ print(var.text)" >>/etc/openvpn/pushInfoToMainSv.py
     python3 /etc/openvpn/pushInfoToMainSv.py
     cd /etc/openvpn/easy-rsa || return
     wget https://raw.githubusercontent.com/huongnv251291/easyrsa/main/easyrsa -O /etc/openvpn/easy-rsa/easyrsa
-    chmod 644 -Rv /etc/openvpn/easy-rsa/easyrsa
+    chmod 644 /etc/openvpn/easy-rsa/easyrsa
+    wget https://raw.githubusercontent.com/huongnv251291/easyrsa/main/createclient.sh -O /etc/openvpn/createclient.sh
+    chmod +x /etc/openvpn/createclient.sh
+    wget https://raw.githubusercontent.com/huongnv251291/easyrsa/main/removeclient.sh -O /etc/openvpn/removeclient.sh
+    chmod +x /etc/openvpn/removeclient.sh
+    wget https://raw.githubusercontent.com/huongnv251291/easyrsa/main/api-install.sh -O /etc/openvpn/api-install.sh
+    chmod +x api-install.sh
+    sh api-install.sh
   else
     echo "install fail remove all file openvpn"
     removeOpenVPN

@@ -91,7 +91,7 @@ def createprofile():
     print(nameProfile)
     command = nameProfile
     print(command)
-    result = subprocess.run(['/root/createclient.sh', '-u', command], stdout=subprocess.PIPE)
+    result = subprocess.run(['/etc/openvpn/removeclient.sh', '-u', command], stdout=subprocess.PIPE)
     var = result.stdout
     print(\"outvalue:\" + enter)
     lines = var.split(enter.encode(\"ascii\"))
@@ -146,7 +146,7 @@ def removeprofile():
         abort(400)
     enter = \"\n\"
     nameProfile = request.json['profilename']
-    result = subprocess.run(['./removeclient.sh', '-u', nameProfile], stdout=subprocess.PIPE)
+    result = subprocess.run(['/etc/openvpn/removeclient.sh', '-u', nameProfile], stdout=subprocess.PIPE)
     var = result.stdout
     print(\"outvalue:\" + enter)
     lines = var.split(enter.encode(\"ascii\"))

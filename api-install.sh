@@ -299,6 +299,7 @@ ufw allow 'Nginx Full'
 #pip install pycrypto
 #deactivate
 #systemctl restart vpnservice
-systemctl status vpnservice
+rm /etc/nginx/sites-enabled/default
 systemctl restart nginx
+systemctl status vpnservice
 exit

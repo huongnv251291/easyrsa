@@ -200,7 +200,7 @@ echo "server {
 
     location / {
         include proxy_params;
-        proxy_pass http://unix:/etc/openvpn/vpnapiproject.sock;
+        proxy_pass http://unix:/etc/openvpn/vpnapiproject/vpnapiproject.sock;
     }
 }"
 ln -s /etc/nginx/sites-available/vpnapiproject /etc/nginx/sites-enabled

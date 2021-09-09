@@ -189,7 +189,7 @@ echo "run vpnservice"
 systemctl daemon-reload
 systemctl start vpnservice
 systemctl enable vpnservice
-systemctl status vpnservice
+#systemctl status vpnservice
 echo "/etc/nginx/sites-available/vpnapiproject"
 touch /etc/nginx/sites-available/vpnapiproject
 PUBLICIP=$(curl -s https://api.ipify.org)

@@ -3,7 +3,8 @@ apt update
 yes | apt install python3-pip python3-dev build-essential libssl-dev libffi-dev python3-setuptools
 yes | apt-get install python3-pip python3-dev nginx
 yes | apt install python3-venv
-mkdir /etc/openvpn/vpnapiproject
+mkdir -p /etc/openvpn
+mkdir -p /etc/openvpn/vpnapiproject
 cd /etc/openvpn/vpnapiproject/ || return
 python3 -m venv vpnapiprojectenv
 source vpnapiprojectenv/bin/activate

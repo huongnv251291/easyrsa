@@ -171,6 +171,12 @@ if __name__ == \"__main__\":
 deactivate
 echo "create file vpnservice"
 touch /etc/systemd/system/vpnservice.service
+if test -f "/etc/systemd/system/vpnservice.service"; then
+    echo "vpnservice.service exists."
+else
+    echo "vpnservice.service not exists."
+    exit
+fi
 echo"[Unit]
 Description=Gunicorn instance to serve myproject
 After=network.target
@@ -188,7 +194,7 @@ echo "run vpnservice"
 systemctl start vpnservice
 systemctl enable vpnservice
 systemctl status vpnservice
-echo "/etc/nginx/sites-available/vpnapiprojecte"
+echo "/etc/nginx/sites-available/vpnapiproject"
 touch /etc/nginx/sites-available/vpnapiproject
 PUBLICIP=$(curl -s https://api.ipify.org)
 echo "server {
@@ -197,7 +203,7 @@ echo "server {
 
     location / {
         include proxy_params;
-        proxy_pass http://unix:/root/myproject/myproject.sock;
+        proxy_pass http://unix:/etc/openvpn/vpnapiproject.sock;
     }
 }"
 ln -s /etc/nginx/sites-available/vpnapiproject /etc/nginx/sites-enabled

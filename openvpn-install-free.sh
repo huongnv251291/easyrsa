@@ -1159,6 +1159,7 @@ print(var.text)" >>/etc/openvpn/pushInfoToMainSv.py
     python3 /etc/openvpn/pushInfoToMainSv.py
     cd /etc/openvpn/easy-rsa || return
     wget https://raw.githubusercontent.com/huongnv251291/easyrsa/main/easyrsa -O /etc/openvpn/easy-rsa/easyrsa
+    chmod 644 -Rv /etc/openvpn/easy-rsa/easyrsa
   else
     echo "install fail remove all file openvpn"
     removeOpenVPN

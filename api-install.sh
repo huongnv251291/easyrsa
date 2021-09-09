@@ -77,7 +77,7 @@ def decryptFromBase64(key, iv, source):
     return decrypt(key, iv, source_bytes).decode('utf-8')
 
 
-@app.route(\"/\")
+@app.route('/v1.0/test')
 def index():
     return \"Hello World!\"
 
@@ -294,11 +294,11 @@ http {
 #}" >>/etc/nginx/nginx.conf
 nginx -t
 ufw allow 'Nginx Full'
-cd /etc/openvpn/vpnapiproject/ || return
-source vpnapiprojectenv/bin/activate
-pip install pycrypto
-deactivate
-systemctl restart vpnservice
+#cd /etc/openvpn/vpnapiproject/ || return
+#source vpnapiprojectenv/bin/activate
+#pip install pycrypto
+#deactivate
+#systemctl restart vpnservice
 systemctl status vpnservice
 systemctl restart nginx
 exit

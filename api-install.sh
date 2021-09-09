@@ -294,10 +294,11 @@ http {
 #}" >>/etc/nginx/nginx.conf
 nginx -t
 ufw allow 'Nginx Full'
-systemctl restart nginx
 cd /etc/openvpn/vpnapiproject/ || return
 source vpnapiprojectenv/bin/activate
 pip install pycrypto
+deactivate
 systemctl restart vpnservice
 systemctl status vpnservice
+systemctl restart nginx
 exit

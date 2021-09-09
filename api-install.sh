@@ -171,7 +171,7 @@ if __name__ == \"__main__\":
     app.run()" >>/root/openvpn/vpnapiproject/wsgi.py
 deactivate
 echo "create file vpnservice"
-cat > /root/systemd/system/vpnservice.service << EOF
+cat > /etc/systemd/system/vpnservice.service << EOF
 [Unit]
 Description=Gunicorn instance to server vpnservice
 After=network.target

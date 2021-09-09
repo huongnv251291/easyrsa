@@ -8,6 +8,7 @@ mkdir -p /etc/openvpn/vpnapiproject
 cd /etc/openvpn/vpnapiproject/ || return
 python3 -m venv vpnapiprojectenv
 source vpnapiprojectenv/bin/activate
+pip install pycrypto
 pip install wheel
 pip install gunicorn flask
 echo "create file api"
@@ -164,7 +165,7 @@ if __name__ == '__main__':
 ufw allow 5000
 echo "create file wsgi"
 touch /etc/openvpn/vpnapiproject/wsgi.py
-echo "from vpnapiproject import app
+echo "from api import app
 
 if __name__ == \"__main__\":
     app.run()" >>/etc/openvpn/vpnapiproject/wsgi.py

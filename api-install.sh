@@ -1,8 +1,8 @@
 #!/bin/bash
 apt update
-apt install -y python3-pip python3-dev build-essential libssl-dev libffi-dev python3-setuptools
-apt-get install -y python3-pip python3-dev nginx
-apt install -y python3-venv
+yes | apt install python3-pip python3-dev build-essential libssl-dev libffi-dev python3-setuptools
+yes | apt-get install python3-pip python3-dev nginx
+yes | apt install python3-venv
 mkdir /etc/openvpn/
 cd /etc/vpnapiproject/ || return
 python3 -m venv vpnapiprojectenv

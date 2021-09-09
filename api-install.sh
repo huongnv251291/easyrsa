@@ -170,27 +170,21 @@ if __name__ == \"__main__\":
     app.run()" >>/etc/openvpn/vpnapiproject/wsgi.py
 deactivate
 echo "create file vpnservice"
-touch /etc/systemd/system/vpnservice.service
-if test -f "/etc/systemd/system/vpnservice.service"; then
-    echo "vpnservice.service exists."
-else
-    echo "vpnservice.service not exists."
-    exit
-fi
-sudo su
-echo"[Unit]
-Description=Gunicorn instance to serve myproject
+cat > /etc/systemd/system/vpnservice.service << EOF
+[Unit]
+Description=Gunicorn instance to server vpnservice
 After=network.target
 
 [Service]
 User=root
 Group=www-data
 WorkingDirectory=/etc/openvpn/vpnapiproject
-Environment=\"PATH=/etc/openvpn/vpnapiproject/vpnapiprojectenv/bin\"
+Environment="PATH=/etc/openvpn/vpnapiproject/vpnapiprojectenv/bin"
 ExecStart=/etc/openvpn/vpnapiproject/vpnapiprojectenv/bin/gunicorn --workers 3 --bind unix:vpnapiproject.sock -m 007 wsgi:app
 
 [Install]
-WantedBy=multi-user.target" >>/etc/systemd/system/vpnservice.service
+WantedBy=multi-user.target
+EOF
 echo "run vpnservice"
 systemctl daemon-reload
 systemctl start vpnservice

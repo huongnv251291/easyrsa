@@ -1,4 +1,4 @@
-# easyrsa
+# easyrsa \n
 Cách sử dụng file openvpn-install-free.sh và openvpn-install-private.sh
 wget https://raw.githubusercontent.com/huongnv251291/easyrsa/main/openvpn-install-free.sh
 chmod +x openvpn-install-free.sh

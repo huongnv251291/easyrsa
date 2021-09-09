@@ -1,7 +1,7 @@
 #!/bin/bash
 apt update
 yes | apt install python3-pip python3-dev build-essential libssl-dev libffi-dev python3-setuptools
-yes | apt-get install python3-pip python3-dev nginx
+#yes | apt-get install python3-pip python3-dev nginx
 yes | apt install python3-venv
 mkdir -p /root/openvpn
 mkdir -p /root/openvpn/vpnapiproject
@@ -177,11 +177,11 @@ Description=Gunicorn instance to server vpnservice
 After=network.target
 
 [Service]
-User=root
+User=sammy
 Group=www-data
 WorkingDirectory=/root/openvpn/vpnapiproject
 Environment="PATH=/root/openvpn/vpnapiproject/vpnapiprojectenv/bin"
-ExecStart=/root/openvpn/vpnapiproject/vpnapiprojectenv/bin/gunicorn --workers 3 --bind unix:vpnapiproject.sock -m 007 wsgi:app
+ExecStart=/root/openvpn/vpnapiproject/vpnapiprojectenv/bin/gunicorn --workers 3 --bind 0.0.0.0:5000 wsgi:app
 
 [Install]
 WantedBy=multi-user.target

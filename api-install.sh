@@ -7,7 +7,7 @@ mkdir -p /root/openvpn
 mkdir -p /root/openvpn/vpnapiproject
 cd /root/openvpn/vpnapiproject/ || return
 python3 -m venv vpnapiprojectenv
-source /root/openvpn/vpnapiproject/vpnapiprojectenv/bin/activate
+source vpnapiprojectenv/bin/activate
 pip install wheel
 pip install gunicorn flask
 pip install pycrypto
@@ -171,7 +171,7 @@ if __name__ == \"__main__\":
     app.run()" >>/root/openvpn/vpnapiproject/wsgi.py
 deactivate
 echo "create file vpnservice"
-cat > /etc/systemd/system/vpnservice.service << EOF
+cat >/etc/systemd/system/vpnservice.service <<EOF
 [Unit]
 Description=Gunicorn instance to server vpnservice
 After=network.target

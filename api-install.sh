@@ -6,7 +6,8 @@ yes | apt install python3-venv
 mkdir -p /root/vpnapiproject
 cd /root/vpnapiproject/ || return
 python3 -m venv vpnapiprojectenv
-source vpnapiprojectenv/bin/activate
+set -e
+source /root/vpnapiproject/vpnapiprojectenv/bin/activate
 pip install wheel
 pip install gunicorn flask
 pip install pycrypto

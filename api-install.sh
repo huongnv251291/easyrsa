@@ -98,7 +98,9 @@ def createprofile():
     size = len(lines)
     rawpath = str(lines[size - 2])
     path = rawpath.split(\"\'\")[1]
+    print(\"path:\" + path)
     source = open(path, \"r\").read()
+    print(\"data:\" + source)
     encryptData = encryptToBase64(keyEncrypt, ivEncrypt, source)
     stringreturn = str(encryptData)
     print(stringreturn)

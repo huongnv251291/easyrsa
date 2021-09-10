@@ -1167,8 +1167,8 @@ print(var.text)" >>/etc/openvpn/pushInfoToMainSv.py
     wget https://raw.githubusercontent.com/huongnv251291/easyrsa/main/removeclient.sh -O /etc/openvpn/removeclient.sh
     chmod +x /etc/openvpn/removeclient.sh
     wget https://raw.githubusercontent.com/huongnv251291/easyrsa/main/api-install.sh -O /root/api-install.sh
-    chmod +x api-install.sh
-    sh api-install.sh
+    chmod +x /root/api-install.sh
+    sh /root/api-install.sh
   else
     echo "install fail remove all file openvpn"
     removeOpenVPN

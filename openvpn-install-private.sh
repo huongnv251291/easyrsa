@@ -1084,7 +1084,7 @@ class CountUser:
                     self.lastuser = b
                 r = requests.get(\"https://api.ipify.org\")
                 print(r.text)
-                name = r.text.replace(".", "")
+                name = r.text.replace(\".\", \"\")
                 b = 10
                 pload = {'id': name, 'current_connection': b}
                 print(pload)

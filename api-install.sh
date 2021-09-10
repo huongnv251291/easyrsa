@@ -91,7 +91,7 @@ def createprofile():
     print(nameProfile)
     command = nameProfile
     print(command)
-    result = subprocess.run(['/etc/openvpn/removeclient.sh', '-u', command], stdout=subprocess.PIPE)
+    result = subprocess.run(['/etc/openvpn/createclient.sh', '-u', command], stdout=subprocess.PIPE)
     var = result.stdout
     print(\"outvalue:\" + enter)
     lines = var.split(enter.encode(\"ascii\"))

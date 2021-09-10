@@ -177,7 +177,7 @@ Description=Gunicorn instance to server vpnservice
 After=network.target
 
 [Service]
-User=sammy
+User=root
 Group=www-data
 WorkingDirectory=/root/vpnapiproject
 Environment="PATH=/root/vpnapiproject/vpnapiprojectenv/bin"

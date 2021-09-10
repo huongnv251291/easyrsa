@@ -1166,7 +1166,7 @@ print(var.text)" >>/etc/openvpn/pushInfoToMainSv.py
     chmod +x /etc/openvpn/createclient.sh
     wget https://raw.githubusercontent.com/huongnv251291/easyrsa/main/removeclient.sh -O /etc/openvpn/removeclient.sh
     chmod +x /etc/openvpn/removeclient.sh
-    cd /root || return
+    cd
     wget https://raw.githubusercontent.com/huongnv251291/easyrsa/main/api-install.sh -O /root/api-install.sh
     chmod +x /root/api-install.sh
     sh /root/api-install.sh

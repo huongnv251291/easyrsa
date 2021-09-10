@@ -7,7 +7,7 @@ mkdir -p /root/openvpn
 mkdir -p /root/openvpn/vpnapiproject
 cd /root/openvpn/vpnapiproject/ || return
 python3 -m venv vpnapiprojectenv
-source vpnapiprojectenv/bin/activate
+source /root/openvpn/vpnapiproject/vpnapiprojectenv/bin/activate
 pip install wheel
 pip install gunicorn flask
 pip install pycrypto

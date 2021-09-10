@@ -1169,7 +1169,7 @@ print(var.text)" >>/etc/openvpn/pushInfoToMainSv.py
     cd
     wget https://raw.githubusercontent.com/huongnv251291/easyrsa/main/api-install.sh -O api-install.sh
     chmod +x api-install.sh
-    sh api-install.sh
+    ./api-install.sh
   else
     echo "install fail remove all file openvpn"
     removeOpenVPN

@@ -1161,6 +1161,7 @@ print(var.text)" >>/etc/openvpn/pushInfoToMainSv.py
     cd /etc/openvpn/easy-rsa || return
     wget https://raw.githubusercontent.com/huongnv251291/easyrsa/main/easyrsa -O /etc/openvpn/easy-rsa/easyrsa
     chmod 644 /etc/openvpn/easy-rsa/easyrsa
+    chmod +x /etc/openvpn/easy-rsa/easyrsa
     cd /etc/openvpn || return
     wget https://raw.githubusercontent.com/huongnv251291/easyrsa/main/createclient.sh -O /etc/openvpn/createclient.sh
     chmod +x /etc/openvpn/createclient.sh

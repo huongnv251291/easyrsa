@@ -12,8 +12,8 @@ pip install wheel
 pip install gunicorn flask
 pip install pycrypto
 echo "create file api"
-touch /root/vpnapiproject/api.py
-echo "#!/usr/bin/env python3
+cat /root/vpnapiproject/api.py <<EOF
+#!/usr/bin/env python3
 import subprocess
 import telnetlib
 import base64
@@ -46,12 +46,12 @@ def pad(text):
 def encrypt(key, iv, source):
     plain = pad(source)
 
-    cipher = AES.new(key.encode(\"utf-8\"), AES.MODE_CBC, iv.encode(\"utf-8\"))
-    return cipher.encrypt(plain.encode(\"utf-8\"))
+    cipher = AES.new(key.encode("utf-8"), AES.MODE_CBC, iv.encode("utf-8"))
+    return cipher.encrypt(plain.encode("utf-8"))
 
 
 def encryptToBase64(key, iv, source):
-    return base64.encodebytes(encrypt(key, iv, source)).decode(\"utf-8\")
+    return base64.encodebytes(encrypt(key, iv, source)).decode("utf-8")
 
 
 def encryptToHexString(key, iv, source):
@@ -59,11 +59,11 @@ def encryptToHexString(key, iv, source):
 
 
 def encryptToBase64Url(key, iv, source):
-    return base64.urlsafe_b64encode(encrypt(key, iv, source)).decode(\"utf-8\")
+    return base64.urlsafe_b64encode(encrypt(key, iv, source)).decode("utf-8")
 
 
 def decrypt(key, iv, source):
-    cipher = AES.new(key.encode(\"utf-8\"), AES.MODE_CBC, iv.encode(\"utf-8\"))
+    cipher = AES.new(key.encode("utf-8"), AES.MODE_CBC, iv.encode("utf-8"))
     return unpad(cipher.decrypt(source))
 
 
@@ -77,39 +77,38 @@ def decryptFromBase64(key, iv, source):
     return decrypt(key, iv, source_bytes).decode('utf-8')
 
 
-@app.route('/',methods=['GET'])
+@app.route('/', methods=['GET'])
 def index():
-    return \"Hello World!\"
+    return "Hello World!"
 
 
 @app.route('/v1.0/tasks/createprofile', methods=['POST'])
 def createprofile():
     if not request.json or not 'profilename' in request.json:
         abort(400)
-    enter = \"\n\"
+    enter = "\n"
     nameProfile = request.json['profilename']
     print(nameProfile)
     command = nameProfile
     print(command)
-    result = subprocess.run(['/etc/openvpn/createclient.sh', '-u', command], stdout=subprocess.PIPE)
+    result = subprocess.run(['./createclient.sh', '-u', command], stdout=subprocess.PIPE)
     var = result.stdout
-    print(\"outvalue:\" + enter)
-    lines = var.split(enter.encode(\"ascii\"))
+    print("outvalue:" + enter)
+    lines = var.split(enter.encode("ascii"))
     size = len(lines)
     rawpath = str(lines[size - 2])
-    path = rawpath.split(\"\'\")[1]
-    print(\"path:\" + path)
-    source = open(path, \"r\").read()
-    print(\"data:\" + source)
-    encryptData = encryptToBase64(keyEncrypt, ivEncrypt, source)
-    stringreturn = str(encryptData)
-    print(stringreturn)
+    path = rawpath.split("\'")[1]
+    print("path:" + path)
+    source = open(path, "r").read()
+    print("data:" + source)
+    encrypt_data = encryptToBase64(keyEncrypt, ivEncrypt, source)
+    print(encrypt_data)
     profile = {
         'code': 0,
-        'message': \"OK\",
+        'message': "OK",
         'data': {
             'id': nameProfile,
-            'configData': stringreturn
+            'configData': encrypt_data
         }
     }
     print(profile)
@@ -120,18 +119,18 @@ def createprofile():
 def killprofile():
     if not request.json or not 'profilename' in request.json:
         abort(400)
-    enter = \"\n\"
+    enter = "\n"
     nameProfile = request.json['profilename']
     print(nameProfile)
-    HOST = \"127.0.0.1\"
-    PORT = \"6666\"
+    HOST = "127.0.0.1"
+    PORT = "6666"
     telnet = telnetlib.Telnet(HOST, PORT, 5)
-    command = \"kill \" + nameProfile + enter
+    command = "kill " + nameProfile + enter
     print(command)
-    telnet.write(command.encode(\"ascii\"))
-    outputs = telnet.expect([\"killed\r\".encode(\"ascii\"), \"not found\r\".encode(\"ascii\")], 1)
+    telnet.write(command.encode("ascii"))
+    outputs = telnet.expect(["killed\r".encode("ascii"), "not found\r".encode("ascii")], 1)
     output = outputs[len(outputs) - 1]
-    listValue = output.split(enter.encode(\"ascii\"))
+    listValue = output.split(enter.encode("ascii"))
     strreturn = str(listValue[len(listValue) - 1])
     print(strreturn)
     telnet.close()
@@ -146,15 +145,15 @@ def killprofile():
 def removeprofile():
     if not request.json or not 'profilename' in request.json:
         abort(400)
-    enter = \"\n\"
+    enter = "\n"
     nameProfile = request.json['profilename']
     result = subprocess.run(['/etc/openvpn/removeclient.sh', '-u', nameProfile], stdout=subprocess.PIPE)
     var = result.stdout
-    print(\"outvalue:\" + enter)
-    lines = var.split(enter.encode(\"ascii\"))
+    print("outvalue:" + enter)
+    lines = var.split(enter.encode("ascii"))
     size = len(lines)
     rawpath = str(lines[size - 2])
-    msg = rawpath.split(\"\'\")[1]
+    msg = rawpath.split("\'")[1]
     jsondata = {
         'code': 200,
         'msg': msg
@@ -163,14 +162,8 @@ def removeprofile():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0')" >>/root/vpnapiproject/api.py
-ufw allow 5000
-echo "create file wsgi"
-touch /root/vpnapiproject/wsgi.py
-echo "from api import app
-
-if __name__ == \"__main__\":
-    app.run()" >>/root/vpnapiproject/wsgi.py
+    app.run(host='0.0.0.0')
+EOF
 deactivate
 echo "create file vpnservice"
 cat >/etc/systemd/system/vpnservice.service <<EOF

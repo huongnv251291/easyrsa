@@ -1,9 +1,9 @@
 #!/bin/bash
-# shellcheck disable=SC1091,SC2164,SC2034,SC1072,SC1073,SC1009
+PATH="$PATH:/usr/bin:/bin"
 
 while getopts "u:" opt; do
   case "$opt" in
-  u) CLIENT="$OPTARG" ;;
+  u*) CLIENT="$OPTARG" ;;
   esac
 done
 if [ -z "$CLIENT" ]; then

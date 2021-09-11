@@ -1,10 +1,9 @@
 #!/bin/bash
-# shellcheck disable=SC1091,SC2164,SC2034,SC1072,SC1073,SC1009
-
+PATH="$PATH:/usr/bin:/bin"
 while getopts "u:p:" opt; do
   case "$opt" in
-  u) CLIENT="$OPTARG" ;;
-  p) PASS="$OPTARG" ;;
+  u*) CLIENT="$OPTARG" ;;
+  p*) PASS="$OPTARG" ;;
   esac
 done
 if [ -z "$CLIENT" ]; then
@@ -25,8 +24,8 @@ if [ -z "$PASS" ]; then
   echo "" | ./easyrsa build-client-full "$CLIENT" nopass
 else
   (
-    echo $PASS
-    echo $PASS
+    echo "$PASS"
+    echo "$PASS"
   ) | ./easyrsa build-client-full "$CLIENT"
 fi
 if [ -e "/home/${CLIENT}" ]; then

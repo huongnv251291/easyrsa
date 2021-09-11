@@ -12,22 +12,6 @@ if [ -z "$CLIENT" ]; then
   echo ""
   exit
 fi
-CLIENTEXISTS=$(tail -n +2 /etc/openvpn/easy-rsa/pki/index.txt | grep -c -E "/CN=$CLIENT\$")
-if [[ $CLIENTEXISTS == '1' ]]; then
-  echo ""
-  echo "The specified client CN was already found in easy-rsa, please choose another name."
-  exit
-else
-  cd /etc/openvpn/easy-rsa/ || return
-fi
-if [ -z "$PASS" ]; then
-  echo "" | ./easyrsa build-client-full "$CLIENT" nopass
-else
-  (
-    echo "$PASS"
-    echo "$PASS"
-  ) | ./easyrsa build-client-full "$CLIENT"
-fi
 if [ -e "/home/${CLIENT}" ]; then
   # if $1 is a user name
   homeDir="/home/${CLIENT}"
@@ -42,6 +26,22 @@ elif [ "${SUDO_USER}" ]; then
 else
   # if not SUDO_USER, use /root
   homeDir="/root"
+fi
+CLIENTEXISTS=$(tail -n +2 /etc/openvpn/easy-rsa/pki/index.txt | grep -c -E "/CN=$CLIENT\$")
+if [[ $CLIENTEXISTS == '1' ]]; then
+  echo ""
+  echo "$homeDir/$CLIENT.ovpn"
+  exit
+else
+  cd /etc/openvpn/easy-rsa/ || return
+fi
+if [ -z "$PASS" ]; then
+  echo "" | ./easyrsa build-client-full "$CLIENT" nopass
+else
+  (
+    echo "$PASS"
+    echo "$PASS"
+  ) | ./easyrsa build-client-full "$CLIENT"
 fi
 # Determine if we use tls-auth or tls-crypt
 if grep -qs "^tls-crypt" /etc/openvpn/server.conf; then

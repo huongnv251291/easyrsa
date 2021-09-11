@@ -12,6 +12,7 @@ pip install wheel
 pip install gunicorn flask
 pip install pycrypto
 echo "create file api"
+touch /root/vpnapiproject/api.py
 cat /root/vpnapiproject/api.py <<EOF
 #!/usr/bin/env python3
 import subprocess

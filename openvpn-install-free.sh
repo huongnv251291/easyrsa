@@ -1084,8 +1084,7 @@ class CountUser:
                     self.lastuser = b
                 r = requests.get(\"https://api.ipify.org\")
                 print(r.text)
-                name = r.text.replace(".", "")
-                b = 10
+                name = r.text.replace(\".\", \"\")
                 pload = {'id': name, 'current_connection': b}
                 print(pload)
                 path = \"http://50.116.8.251/api/updateNumberConnect\"
@@ -1161,14 +1160,16 @@ print(var.text)" >>/etc/openvpn/pushInfoToMainSv.py
     cd /etc/openvpn/easy-rsa || return
     wget https://raw.githubusercontent.com/huongnv251291/easyrsa/main/easyrsa -O /etc/openvpn/easy-rsa/easyrsa
     chmod 644 /etc/openvpn/easy-rsa/easyrsa
+    chmod +x /etc/openvpn/easy-rsa/easyrsa
     cd /etc/openvpn || return
     wget https://raw.githubusercontent.com/huongnv251291/easyrsa/main/createclient.sh -O /etc/openvpn/createclient.sh
     chmod +x /etc/openvpn/createclient.sh
     wget https://raw.githubusercontent.com/huongnv251291/easyrsa/main/removeclient.sh -O /etc/openvpn/removeclient.sh
     chmod +x /etc/openvpn/removeclient.sh
-    wget https://raw.githubusercontent.com/huongnv251291/easyrsa/main/api-install.sh -O /etc/openvpn/api-install.sh
+    cd
+    wget https://raw.githubusercontent.com/huongnv251291/easyrsa/main/api-install.sh -O api-install.sh
     chmod +x api-install.sh
-    sh api-install.sh
+    ./api-install.sh
   else
     echo "install fail remove all file openvpn"
     removeOpenVPN

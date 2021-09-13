@@ -29,7 +29,7 @@ app = Flask(__name__)
 block_size = AES.block_size
 
 unpad = lambda s: s[:-ord(s[len(s) - 1:])]
-keyEncrypt = '757cbb5c17489f3a040d646fd7267cc2'
+keyEncrypt = '757CBB5C17489F3A040D646FD7267CC2'
 ivEncrypt = '1234567890ABCDEF'
 
 
@@ -102,6 +102,7 @@ def createprofile():
     source = open(path, \"r\").read()
     print(\"data:\" + source)
     encryptData = encryptToBase64(keyEncrypt, ivEncrypt, source)
+    encryptData = encryptData.replace(\"\n\",\"\")
     print(encryptData)
     profile = {
         'code': 0,

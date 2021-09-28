@@ -76,6 +76,51 @@ public static AQIHistoric buildFromJson(JSONObject data) {
         }
     }
     
+        static class Parser {
+        int i = 0;
+        int l;
+        String s;
+
+        Parser(String s2) {
+            this.s = s2;
+            this.l = s2.length();
+        }
+
+        /* access modifiers changed from: package-private */
+        public int readInt() {
+            char c;
+            int v = 0;
+            while (this.i < this.l && (c = this.s.charAt(this.i)) >= '0' && c <= '9') {
+                v = (v * 10) + (c - '0');
+                this.i++;
+            }
+            return v;
+        }
+
+        /* access modifiers changed from: package-private */
+        public char getChar() {
+            return this.s.charAt(this.i);
+        }
+
+        /* access modifiers changed from: package-private */
+        public char readChar() {
+            String str = this.s;
+            int i2 = this.i;
+            this.i = i2 + 1;
+            return str.charAt(i2);
+        }
+
+        /* access modifiers changed from: package-private */
+        public boolean eos() {
+            return this.i >= this.l;
+        }
+
+        /* access modifiers changed from: package-private */
+        public void back() {
+            this.i--;
+        }
+    }
+    
     /**
      * @param s  string for decode
      * @param dt khoang thoi gian giua 2 lan so lieu

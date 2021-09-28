@@ -1,3 +1,37 @@
+
+    String STATUS = "status";
+    String OK = "ok";
+    String DATA = "data";
+    String AQI = "aqi";
+    String IDX = "idx";
+    String DOMINENTPOL = "dominentpol";
+    String IAQI = "iaqi";
+    String VALUE = "v";
+    String CO = "co";
+    String DEW = "dew";
+    String HUMIDITY = "h";
+    String NO2 = "no2";
+    String O3 = "o3";
+    String PRESSURE = "p";
+    String PM25 = "pm25";
+    String SO2 = "so2";
+    String TEMP = "t";
+    String WIND = "w";
+    String CITY = "city";
+    String TIME = "time";
+    String HISTORIC = "historic";
+    String FORECAST = "forecast";
+    String NEAREST = "nearest";
+    String PM2DOT5 = "PM2.5";
+    String UHOUR = "uhour";
+    String XTIME = "xtime";
+    String WINDSPEED = "ws";
+    String WINDG = "wg";
+    String WINDEGRESS = "wd";
+    String LOWPM25 = "pm25.low";
+    String HIGHTPM25 = "pm25.high";
+    String AQIFORECAST = "a";
+
 public static AQIHistoric buildFromJson(JSONObject data) {
         try {
             AQIHistoric aqiHistoric = new AQIHistoric();

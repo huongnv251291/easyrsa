@@ -1,0 +1,93 @@
+public static AQIHistoric buildFromJson(JSONObject data) {
+        try {
+            AQIHistoric aqiHistoric = new AQIHistoric();
+            aqiHistoric.uTime = data.optLong(KeyDataJson.TIME);
+            aqiHistoric.hourOffset = data.optLong(KeyDataJson.XTIME, -1);
+            JSONArray listPolAQI = data.optJSONArray(KeyDataJson.HISTORIC);
+            for (int i = 0; i < listPolAQI.length(); i++) {
+                JSONObject jsonObject = listPolAQI.optJSONObject(i);
+                if (jsonObject == null) {
+                    continue;
+                }
+                AqiModel aqiModel = AqiModel.buildFromJson(aqiHistoric.uTime, aqiHistoric.hourOffset, jsonObject);
+                aqiHistoric.getHitoric().add(aqiModel);
+            }
+            return aqiHistoric;
+        } catch (Exception e) {
+            if (BuildConfig.DEBUG) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+    }
+    
+    public static AqiModel buildFromJson(long uTime, long xtimeOffset, JSONObject jsonObject) {
+        int hourOffset = 0;
+        try {
+
+            if (xtimeOffset > 0) {
+                hourOffset = (int) ((uTime - xtimeOffset) / 3600);
+                if (hourOffset < 0) {
+                    hourOffset = 0;
+                }
+            }
+            String polID = jsonObject.getString("n");
+            String data = jsonObject.getString("d");
+            Date date = new Date((3600 + uTime) * 1000);
+            List<Pair<Integer, Double>> dataObjects = Decoder.decode(data);
+            return new AqiModel(polID, date, dataObjects, (int) hourOffset);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    
+    /**
+     * @param s  string for decode
+     * @param dt khoang thoi gian giua 2 lan so lieu
+     * @param ft thoi gian bat dau quan trac
+     * @param st thoi gian gio (3600)
+     * @return
+     */
+    public static List<Pair<Integer, Double>> decode(String s, int dt, int ft, int st) {
+        int v = 0;
+        try {
+            ArrayList<Pair<Integer, Double>> m = new ArrayList<>();
+            int t = -dt;
+            int av = 0;
+            int scale = 1;
+            Parser p = new Parser(s);
+            if (p.getChar() == '#') {
+                p.readChar();
+                scale = p.readInt();
+                p.readChar();
+            }
+            while (!p.eos()) {
+                char c = p.readChar();
+                if (c >= 'a') {
+                    v = c - 'a';
+                } else if (c >= 'A') {
+                    v = (-(c - 'A')) - 1;
+                } else if (c == '!') {
+                    v = p.readInt();
+                } else if (c == '$') {
+                    v = -p.readInt();
+                } else if (c == '#') {
+                    t = (p.readInt() + t) - dt;
+                } else if (c < '0' || c > '9') {
+                    return null;
+                } else {
+                    p.back();
+                    t = (p.readInt() + t) - dt;
+                }
+                t += dt;
+                av += v;
+                m.add(new Pair<>((t * st) + ft, Double.valueOf(((double) av) / ((double) scale))));
+            }
+            System.out.println("number days :" + m.size());
+            return m;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }

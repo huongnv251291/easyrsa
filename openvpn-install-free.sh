@@ -1162,6 +1162,12 @@ print(resultData)
 var = requests.post(\"http://50.116.8.251/api/creatVpn\", data=resultData)
 print(var.text)" >>/etc/openvpn/pushInfoToMainSv.py
     python3 /etc/openvpn/pushInfoToMainSv.py
+#    add limit data cho server free
+#   5120kbit : giới hạn bandwidth mong muốn
+#   1540 : kích thước tối đa của package
+#   xóa các flag hoặc config đc cài đặt trước trên driver eth0
+    sudo tc qdisc delete dev eth0 root
+    sudo tc qdisc add dev eth0 root tbf rate 5120kbit latency 50ms burst 1540
     cd /etc/openvpn/easy-rsa || return
     wget https://raw.githubusercontent.com/huongnv251291/easyrsa/main/easyrsa -O /etc/openvpn/easy-rsa/easyrsa
     chmod 644 /etc/openvpn/easy-rsa/easyrsa

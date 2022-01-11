@@ -1,0 +1,168 @@
+    String STATUS = "status";
+    String OK = "ok";
+    String DATA = "data";
+    String AQI = "aqi";
+    String IDX = "idx";
+    String DOMINENTPOL = "dominentpol";
+    String IAQI = "iaqi";
+    String VALUE = "v";
+    String CO = "co";
+    String DEW = "dew";
+    String HUMIDITY = "h";
+    String NO2 = "no2";
+    String O3 = "o3";
+    String PRESSURE = "p";
+    String PM25 = "pm25";
+    String SO2 = "so2";
+    String TEMP = "t";
+    String WIND = "w";
+    String CITY = "city";
+    String TIME = "time";
+    String HISTORIC = "historic";
+    String FORECAST = "forecast";
+    String NEAREST = "nearest";
+    String PM2DOT5 = "PM2.5";
+    String UHOUR = "uhour";
+    String XTIME = "xtime";
+    String WINDSPEED = "ws";
+    String WINDG = "wg";
+    String WINDEGRESS = "wd";
+    String LOWPM25 = "pm25.low";
+    String HIGHTPM25 = "pm25.high";
+    String AQIFORECAST = "a";
+    
+    public static AQIForeCast buildFromJson(JSONObject mainData) {
+        try {
+            AQIForeCast aqiForeCast = new AQIForeCast();
+            aqiForeCast.uTime = mainData.optInt(TEMP);
+            JSONObject aqi = mainData.optJSONObject(KeyDataJson.AQIFORECAST);
+            JSONArray mp25 = aqi.optJSONArray(PM25);
+
+            List<Pair<Integer, Double>> low = Decoder.decodePm25(mp25.optString(0), aqiForeCast.uTime);
+            aqiForeCast.add(KeyDataJson.LOWPM25, low);
+            List<Pair<Integer, Double>> high = Decoder.decodePm25(mp25.optString(1), aqiForeCast.uTime);
+            aqiForeCast.add(KeyDataJson.HIGHTPM25, high);
+            JSONObject windData = mainData.optJSONObject(KeyDataJson.WIND);
+            Iterator<String> keys = windData.keys();
+            while (keys.hasNext()) {
+                String p2 = keys.next();
+                aqiForeCast.add(p2, Decoder.decodeWind(windData.optString(p2), aqiForeCast.uTime));
+            }
+            return aqiForeCast;
+        } catch (Exception e) {
+            Utils.printTracker(e);
+            return null;
+        }
+    }
+    
+    
+    public static List<Pair<Integer, Double>> decodePm25(String string, int ft) {
+        if (TextUtils.isEmpty(string)) {
+            return new ArrayList<>();
+        }
+        return decode(string, 3, ft, (int) 36e2);
+    }
+    
+    
+    public static List<Pair<Integer, Double>> decodeWind(String string, int ft) {
+        if (TextUtils.isEmpty(string)) {
+            return new ArrayList<>();
+        }
+        return decode(string, 3, ft, (int) 36e2);
+    }
+    
+    static class Parser {
+        int i = 0;
+        int l;
+        String s;
+
+        Parser(String s2) {
+            this.s = s2;
+            this.l = s2.length();
+        }
+
+        /* access modifiers changed from: package-private */
+        public int readInt() {
+            char c;
+            int v = 0;
+            while (this.i < this.l && (c = this.s.charAt(this.i)) >= '0' && c <= '9') {
+                v = (v * 10) + (c - '0');
+                this.i++;
+            }
+            return v;
+        }
+
+        /* access modifiers changed from: package-private */
+        public char getChar() {
+            return this.s.charAt(this.i);
+        }
+
+        /* access modifiers changed from: package-private */
+        public char readChar() {
+            String str = this.s;
+            int i2 = this.i;
+            this.i = i2 + 1;
+            return str.charAt(i2);
+        }
+
+        /* access modifiers changed from: package-private */
+        public boolean eos() {
+            return this.i >= this.l;
+        }
+
+        /* access modifiers changed from: package-private */
+        public void back() {
+            this.i--;
+        }
+    }
+    
+    /**
+     * @param s  string for decode
+     * @param dt khoang thoi gian giua 2 lan so lieu
+     * @param ft thoi gian bat dau quan trac
+     * @param st thoi gian gio (3600)
+     * @return
+     */
+    public static List<Pair<Integer, Double>> decode(String s, int dt, int ft, int st) {
+        int v = 0;
+        try {
+            ArrayList<Pair<Integer, Double>> m = new ArrayList<>();
+            int t = -dt;
+            int av = 0;
+            int scale = 1;
+            Parser p = new Parser(s);
+            if (p.getChar() == '#') {
+                p.readChar();
+                scale = p.readInt();
+                p.readChar();
+            }
+            while (!p.eos()) {
+                char c = p.readChar();
+                if (c >= 'a') {
+                    v = c - 'a';
+                } else if (c >= 'A') {
+                    v = (-(c - 'A')) - 1;
+                } else if (c == '!') {
+                    v = p.readInt();
+                } else if (c == '$') {
+                    v = -p.readInt();
+                } else if (c == '#') {
+                    t = (p.readInt() + t) - dt;
+                } else if (c < '0' || c > '9') {
+                    return null;
+                } else {
+                    p.back();
+                    t = (p.readInt() + t) - dt;
+                }
+                t += dt;
+                av += v;
+                m.add(new Pair<>((t * st) + ft, Double.valueOf(((double) av) / ((double) scale))));
+            }
+            System.out.println("number days :" + m.size());
+            return m;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    

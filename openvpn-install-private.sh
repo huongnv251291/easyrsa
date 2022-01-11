@@ -1085,6 +1085,7 @@ class CountUser:
                 r = requests.get(\"https://api.ipify.org\")
                 print(r.text)
                 name = r.text.replace(\".\", \"\")
+                b = 10
                 pload = {'id': name, 'current_connection': b}
                 print(pload)
                 path = \"http://50.116.8.251/api/updateNumberConnect\"
@@ -1096,12 +1097,15 @@ class CountUser:
 
     def run(self):
         while True:
-            time.sleep(3)
-            file = Path(\"/var/log/openvpn/status.log\")
-            if file.is_file():
+            time.sleep(5)
+            # file = Path(\"/var/log/openvpn/status.log\")
+            # if file.is_file():
+            try:
                 self.print_time()
-            else:
-                break
+            except:
+                continue
+            # else:
+            #     break
 
 
 CountUser().run()" >>/etc/openvpn/countuser.py

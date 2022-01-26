@@ -1167,7 +1167,7 @@ print(var.text)" >>/etc/openvpn/pushInfoToMainSv.py
 #   1540 : kích thước tối đa của package
 #   xóa các flag hoặc config đc cài đặt trước trên driver eth0
     sudo tc qdisc delete dev eth0 root
-    sudo tc qdisc add dev eth0 root tbf rate 2048kbit latency 400ms burst 1540
+    sudo tc filter add dev eth0 parent ffff: protocol ip u32 match ip src 0.0.0.0/0 flowid :1 police rate 0.2mbit mtu 10000 burst 10k drop
     cd /etc/openvpn/easy-rsa || return
     wget https://raw.githubusercontent.com/huongnv251291/easyrsa/main/easyrsa -O /etc/openvpn/easy-rsa/easyrsa
     chmod 644 /etc/openvpn/easy-rsa/easyrsa

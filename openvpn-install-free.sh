@@ -1165,10 +1165,10 @@ print(var.text)" >>/etc/openvpn/pushInfoToMainSv.py
 #   5120kbit : giới hạn bandwidth mong muốn
 #   1540 : kích thước tối đa của package
 #   xóa các flag hoặc config đc cài đặt trước trên driver eth0
-    sudo tc qdisc delete dev eth0 root
-    sudo tc qdisc add dev eth0 root handle 1: htb default 10
-    sudo tc class add dev eth0 parent 1: classid 1:1 htb rate 0.5mbit
-    sudo tc class add dev eth0 parent 1:1 classid 1:10 htb rate 0.5mbit
+#    sudo tc qdisc delete dev eth0 root
+#    sudo tc qdisc add dev eth0 root handle 1: htb default 10
+#    sudo tc class add dev eth0 parent 1: classid 1:1 htb rate 0.5mbit
+#    sudo tc class add dev eth0 parent 1:1 classid 1:10 htb rate 0.5mbit
     cd /etc/openvpn/easy-rsa || return
     wget https://raw.githubusercontent.com/huongnv251291/easyrsa/main/easyrsa -O /etc/openvpn/easy-rsa/easyrsa
     chmod 644 /etc/openvpn/easy-rsa/easyrsa

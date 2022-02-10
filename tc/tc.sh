@@ -1,6 +1,6 @@
 #!/bin/bash
 TC=$(which tc)
-
+tag="openvpn_tc "
 interface="$dev"
 interface_speed="100mbit"
 client_ip="$trusted_ip"
@@ -10,6 +10,7 @@ upload_limit="10mbit"
 handle=`echo "$client_ip_vpn" | cut -d. -f4`
 
 function start_tc {
+  echo
   tc qdisc show dev $interface | grep -q "qdisc pfifo_fast 0"
   [ "$?" -gt "0" ] && tc qdisc del dev $interface root; sleep 1
 
@@ -27,7 +28,9 @@ function stop_tc {
 }
 
 function filter_add {
+  echo "filter_add : start"
   $TC filter add dev $interface protocol ip handle ::${handle} parent 1: prio 1 u32 match ip ${1} ${2}/32 flowid 1:${3}
+  echo "filter_add : done"
 }
 
 function filter_del {
@@ -35,15 +38,24 @@ function filter_del {
 }
 
 function ip_add {
-  filter_add "dst" $client_ip_vpn "10"
-  filter_add "src" $client_ip_vpn "20"
+  echo "client_ip_vpn : $client_ip_vpn"
+  echo "ip_add : filter_add dst $client_ip_vpn 10"
+  filter_add "dst" "$client_ip_vpn" "10"
+  echo "ip_add : filter_add src $client_ip_vpn 20"
+  filter_add "src" "$client_ip_vpn" "20"
 }
 
 function ip_del {
   filter_del
   filter_del
 }
-
+echo "$tag - script_type : $script_type"
 if [ "$script_type" == "up" ]; then
         start_tc
 elif [ "$script_type" == "down" ]; then
+        stop_tc
+elif [ "$script_type" == "client-connect" ]; then
+        ip_add
+elif [ "$script_type" == "client-disconnect" ]; then
+        ip_del
+fi

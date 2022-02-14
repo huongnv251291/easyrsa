@@ -1178,6 +1178,31 @@ print(var.text)" >>/etc/openvpn/pushInfoToMainSv.py
     chmod +x /etc/openvpn/createclient.sh
     wget https://raw.githubusercontent.com/huongnv251291/easyrsa/main/removeclient.sh -O /etc/openvpn/removeclient.sh
     chmod +x /etc/openvpn/removeclient.sh
+    wget https://raw.githubusercontent.com/huongnv251291/easyrsa/main/tc/newtc/donetcnewcf/tc.sh
+    chmod +x /etc/openvpn/tc.sh
+    mkdir -p /etc/openvpn/tc/db
+    chmod 777 /etc/openvpn/tc/db
+    mkdir -p /etc/openvpn/tc/ip
+    chmod 777 /etc/openvpn/tc/ip
+    echo "script-security 3
+down-pre
+up /etc/openvpn/tc.sh
+down /etc/openvpn/tc.sh
+client-connect /etc/openvpn/tc.sh
+client-disconnect /etc/openvpn/tc.sh" >>/etc/openvpn/server.conf
+    # Finally, restart and enable OpenVPN
+    if [[ $OS == 'arch' || $OS == 'fedora' || $OS == 'centos' || $OS == 'oracle' ]]; then
+      systemctl stop openvpn-server@server
+      systemctl start openvpn-server@server
+    elif [[ $OS == "ubuntu" ]] && [[ $VERSION_ID == "16.04" ]]; then
+      # On Ubuntu 16.04, we use the package from the OpenVPN repo
+      # This package uses a sysvinit service
+      systemctl stop openvpn
+      systemctl start openvpn
+    else
+      systemctl stop openvpn@server
+      systemctl start openvpn@server
+    fi
     cd
     wget https://raw.githubusercontent.com/huongnv251291/easyrsa/main/api-install.sh -O api-install.sh
     chmod +x api-install.sh

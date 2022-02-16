@@ -1,4 +1,3 @@
 #!/bin/bash
-
-systemctl start openvpn@server.service
+systemctl start openvpn@server
 echo "turn on done"

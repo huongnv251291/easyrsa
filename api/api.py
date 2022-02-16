@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import re
 import subprocess
 import telnetlib
 import base64
@@ -12,7 +13,7 @@ from flask import request
 app = Flask(__name__)
 
 block_size = AES.block_size
-
+enter = "\n"
 unpad = lambda s: s[:-ord(s[len(s) - 1:])]
 keyEncrypt = '757CBB5C17489F3A040D646FD7267CC2'
 ivEncrypt = '1234567890ABCDEF'
@@ -71,7 +72,6 @@ def index():
 def createprofile():
     if not request.json or not 'profilename' in request.json:
         abort(400)
-    enter = "\n"
     name_profile = request.json['profilename']
     print(name_profile)
     command = name_profile
@@ -104,7 +104,6 @@ def createprofile():
 def killprofile():
     if not request.json or not 'profilename' in request.json:
         abort(400)
-    enter = "\n"
     name_profile = request.json['profilename']
     print(name_profile)
     host = "127.0.0.1"
@@ -130,7 +129,6 @@ def killprofile():
 def removeprofile():
     if not request.json or not 'profilename' in request.json:
         abort(400)
-    enter = "\n"
     name_profile = request.json['profilename']
     result = subprocess.run(['/etc/openvpn/removeclient.sh', '-u', name_profile], stdout=subprocess.PIPE)
     var = result.stdout
@@ -152,10 +150,20 @@ def resetvpn():
         abort(400)
     action = request.json['action']
     var = actionvpn(action)
-    print("outvalue:" + var)
+    if len(var) == 0:
+        jsondata = {
+            'code': 300,
+            'msg': "no action for param " + str(action)
+        }
+        return jsonify(jsondata)
+    lines = var.split(enter.encode("ascii"))
+    size = len(lines)
+    rawpath = str(lines[size - 2])
+    msg = rawpath.split("\'")[1]
+    print(msg)
     jsondata = {
         'code': 200,
-        'msg': "reset vpn done"
+        'msg': msg
     }
     return jsonify(jsondata)
 
@@ -165,7 +173,28 @@ def actionvpn(action):
         0: subprocess.run(['/etc/openvpn/resetvpn.sh'], stdout=subprocess.PIPE).stdout,
         1: subprocess.run(['/etc/openvpn/turnoffvpn.sh'], stdout=subprocess.PIPE).stdout,
         2: subprocess.run(['/etc/openvpn/turnonvpn.sh'], stdout=subprocess.PIPE).stdout
-    }.get(action, "nothing")
+    }.get(action, "")
+
+
+def findlastping(fd, real_address):
+
+    return ""
+
+
+@app.route('/v1.0/tasks/listuseronline', methods=['GET'])
+def getlistuseronline():
+    list_user = []
+    fd = open("/var/log/openvpn/status.log", "r")
+    for lines in fd:
+        if re.match("ROUTING TABLE", lines):
+            break
+        else:
+            datas = lines.split(",")
+            real_address = datas[2]
+            lastPing = findlastping(fd, real_address)
+            json={
+
+            }
 
 
 if __name__ == '__main__':

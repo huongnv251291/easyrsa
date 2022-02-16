@@ -19,7 +19,7 @@ class CountUser:
             if lines.startswith("max-clients"):
                 self.max_current_connection = lines.split()[1]
 
-    def push_new_vpn_to_dash_broad(self, b, list):
+    def push_new_vpn_to_dash_broad(self, b):
         self.read_config()
         r = requests.get("https://ipinfo.io/json")
         print(r.text)
@@ -35,7 +35,6 @@ class CountUser:
             'region': str(data_from_ip_info["region"]),
             'country': str(data_from_ip_info["country"]),
             'vpn_type': self.vpn_type,
-            'users_connected': json.dumps(list)
         }
         print(result_data)
         var = requests.post("http://50.116.8.251/api/creatVpn", data=result_data)
@@ -44,7 +43,6 @@ class CountUser:
     def print_time(self):
         fd = open("/var/log/openvpn/status.log", "r")
         b = 0
-        list_user = []
         for lines in fd:
             if re.match("ROUTING TABLE", lines):
                 b = b - 3
@@ -52,9 +50,8 @@ class CountUser:
                     self.last_user = b
                 r = requests.get("https://api.ipify.org")
                 print(r.text)
-                print(list_user)
                 name = r.text.replace(".", "")
-                pload = {'id': name, 'current_connection': b, 'users_connected': json.dumps(list)}
+                pload = {'id': name, 'current_connection': b}
                 print(pload)
                 path = "http://50.116.8.251/api/updateNumberConnect"
                 data = requests.post(path, data=pload)
@@ -62,11 +59,10 @@ class CountUser:
                 data_from_ip_info = json.loads(r.text)
                 error = data_from_ip_info["error"]
                 if re.match("201", error):
-                    self.push_new_vpn_to_dash_broad(b, list_user)
+                    self.push_new_vpn_to_dash_broad(b)
 
                 break
             else:
-                list_user.append(lines)
                 b = b + 1
 
     def run(self):

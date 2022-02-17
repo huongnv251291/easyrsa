@@ -112,14 +112,14 @@ function bwlimit-enable() {
   #  fi
 
   # Limit traffic from VPN server to client
-  echo '123456' | sudo -S tc class add dev "$dev" parent 1: classid 1:"$classid" htb rate "$downrate"
-  echo '123456' | sudo -S tc filter add dev "$dev" parent 1:0 protocol ip prio 1 \
+  sudo tc class add dev "$dev" parent 1: classid 1:"$classid" htb rate "$downrate"
+  sudo tc filter add dev "$dev" parent 1:0 protocol ip prio 1 \
     handle 2:"${hash}":"${handle}" \
     u32 ht 2:"${hash}": match ip dst "$ip"/32 flowid 1:"$classid"
 
   # Limit traffic from client to VPN server
   # Maybe better use ifb for ingress? See: https://serverfault.com/a/386791/209089
-  echo '123456' | sudo -S tc filter add dev "$dev" parent ffff:0 protocol ip prio 1 \
+  sudo tc filter add dev "$dev" parent ffff:0 protocol ip prio 1 \
     handle 3:"${hash}":"${handle}" \
     u32 ht 3:"${hash}": match ip src "$ip"/32 \
     police rate "$uprate" burst 80k drop flowid :"$classid"
@@ -130,10 +130,10 @@ function bwlimit-disable() {
 
   create_identifiers
 
-  echo '123456' | sudo -S tc filter del dev "$dev" parent 1:0 protocol ip prio 1 \
+  sudo tc filter del dev "$dev" parent 1:0 protocol ip prio 1 \
     handle 2:"${hash}":"${handle}" u32 ht 2:"${hash}":
-  echo '123456' | sudo -S tc class del dev "$dev" classid 1:"$classid"
-  echo '123456' | sudo -S tc filter del dev "$dev" parent ffff:0 protocol ip prio 1 \
+  sudo tc class del dev "$dev" classid 1:"$classid"
+  sudo tc filter del dev "$dev" parent ffff:0 protocol ip prio 1 \
     handle 3:"${hash}":"${handle}" u32 ht 3:"${hash}":
 
   # Remove .ip

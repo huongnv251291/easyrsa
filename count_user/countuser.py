@@ -22,7 +22,6 @@ class CountUser:
     def push_new_vpn_to_dash_broad(self, b):
         self.read_config()
         r = requests.get("https://ipinfo.io/json")
-        print(r.text)
         data_from_ip_info = json.loads(r.text)
         id_vps = str(data_from_ip_info["ip"]).replace(".", "")
         result_data = {
@@ -36,9 +35,7 @@ class CountUser:
             'country': str(data_from_ip_info["country"]),
             'vpn_type': self.vpn_type,
         }
-        print(result_data)
-        var = requests.post("http://50.116.8.251/api/creatVpn", data=result_data)
-        print(var.text)
+        requests.post("http://50.116.8.251/api/creatVpn", data=result_data)
 
     def print_time(self):
         fd = open("/var/log/openvpn/status.log", "r")
@@ -49,23 +46,22 @@ class CountUser:
                 if b != self.last_user:
                     self.last_user = b
                 r = requests.get("https://api.ipify.org")
-                print(r.text)
                 name = r.text.replace(".", "")
                 pload = {'id': name, 'current_connection': b}
-                print(pload)
                 path = "http://50.116.8.251/api/updateNumberConnect"
                 data = requests.post(path, data=pload)
-                print(data.text)
-                data_from_ip_info = json.loads(r.text)
-                error = data_from_ip_info["error"]
-                if re.match("201", error):
+                data_from_ip_info = json.loads(data.text)
+                error = data_from_ip_info["code"]
+                if error == 201:
                     self.push_new_vpn_to_dash_broad(b)
-
+                else:
+                    print(data_from_ip_info)
                 break
             else:
                 b = b + 1
 
     def run(self):
+        # self.print_time()
         while True:
             time.sleep(5)
             # file = Path("/var/log/openvpn/status.log")
@@ -74,8 +70,8 @@ class CountUser:
                 self.print_time()
             except:
                 continue
-            # else:
-            #     break
+        # else:
+        #     break
 
 
 CountUser().run()

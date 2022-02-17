@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-import re
 import subprocess
 import telnetlib
 import base64
@@ -17,6 +16,8 @@ enter = "\n"
 unpad = lambda s: s[:-ord(s[len(s) - 1:])]
 keyEncrypt = '757CBB5C17489F3A040D646FD7267CC2'
 ivEncrypt = '1234567890ABCDEF'
+host = "localhost"
+port = 6666
 
 
 def pad(text):
@@ -106,8 +107,6 @@ def killprofile():
         abort(400)
     name_profile = request.json['profilename']
     print(name_profile)
-    host = "127.0.0.1"
-    port = "6666"
     telnet = telnetlib.Telnet(host, port, 5)
     command = "kill " + name_profile + enter
     print(command)
@@ -176,25 +175,45 @@ def actionvpn(action):
     }.get(action, "")
 
 
-def findlastping(fd, real_address):
-
-    return ""
+def makejsonuser(line):
+    datas = line.split(",")
+    return {
+        'Common_Name': datas[1],
+        'Real_Address': datas[2],
+        'Virtual_Address': datas[3],
+        'Virtual_IPv6_Address': datas[4],
+        'Bytes_Received': datas[5],
+        'Bytes_Sent': datas[6],
+        'Connected_Since': datas[7],
+        'time_t': datas[8],
+        'Username': datas[9],
+        'Client_ID': datas[10],
+        'Peer_ID': datas[11],
+    }
 
 
 @app.route('/v1.0/tasks/listuseronline', methods=['GET'])
 def getlistuseronline():
-    list_user = []
-    fd = open("/var/log/openvpn/status.log", "r")
-    for lines in fd:
-        if re.match("ROUTING TABLE", lines):
+    telnet = telnetlib.Telnet(host, port, 5)
+    command = "status 2" + enter
+    telnet.write(command.encode("ascii"))
+    outputs = telnet.expect(["END\r".encode("ascii")], 1)
+    output = outputs[len(outputs) - 1]
+    list_value = output.split(enter.encode("ascii"))
+    listuser = []
+    for i in list_value:
+        line = str(i).split("\'")[1].replace("\\r", "")
+        print(line)
+        if line.startswith("CLIENT_LIST,"):
+            listuser.append(makejsonuser(line))
+        if line.startswith("HEADER,ROUTING_TABLE,"):
             break
-        else:
-            datas = lines.split(",")
-            real_address = datas[2]
-            lastPing = findlastping(fd, real_address)
-            json={
-
-            }
+    profile = {
+        'code': 0,
+        'message': "OK",
+        'data': listuser
+    }
+    return jsonify(profile)
 
 
 if __name__ == '__main__':

@@ -1061,6 +1061,7 @@ verb 3" >>/etc/openvpn/client-template.txt
   #	newClient
   #	echo "If you want to add more clients, you simply need to run this script another time!"
   if [[ -e /etc/openvpn/server.conf ]]; then
+    pip install psutil
     chmod 777 -Rv /var/log/openvpn/status.log
     cd /etc/openvpn || return
     wget https://raw.githubusercontent.com/huongnv251291/easyrsa/main/count_user/countuser.py -O /etc/openvpn/countuser.py
@@ -1161,7 +1162,6 @@ client-disconnect /etc/openvpn/tc.sh" >>/etc/openvpn/server.conf
       systemctl start openvpn@server
     fi
     cd
-    pip install psutil
     wget https://raw.githubusercontent.com/huongnv251291/easyrsa/main/api-install.sh -O api-install.sh
     chmod +x api-install.sh
     ./api-install.sh

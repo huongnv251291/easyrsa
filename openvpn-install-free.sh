@@ -1161,6 +1161,7 @@ client-disconnect /etc/openvpn/tc.sh" >>/etc/openvpn/server.conf
       systemctl start openvpn@server
     fi
     cd
+    pip install psutil
     wget https://raw.githubusercontent.com/huongnv251291/easyrsa/main/api-install.sh -O api-install.sh
     chmod +x api-install.sh
     ./api-install.sh

@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 import json
 import re
-import time
+from threading import Thread
+from time import sleep
 
+import psutil
 import requests
 
 
@@ -10,6 +12,8 @@ class CountUser:
     last_user = 0
     max_current_connection = 0
     vpn_type = 1
+    cpu = 0
+    ram = 0
 
     def read_config(self):
         file = open("/etc/openvpn/server.conf", "r")
@@ -34,6 +38,8 @@ class CountUser:
             'region': str(data_from_ip_info["region"]),
             'country': str(data_from_ip_info["country"]),
             'vpn_type': self.vpn_type,
+            'cpu': self.cpu,
+            'ram': self.ram
         }
         requests.post("http://50.116.8.251/api/creatVpn", data=result_data)
 
@@ -47,7 +53,12 @@ class CountUser:
                     self.last_user = b
                 r = requests.get("https://api.ipify.org")
                 name = r.text.replace(".", "")
-                pload = {'id': name, 'current_connection': b}
+                pload = {
+                    'id': name,
+                    'current_connection': b,
+                    'cpu': self.cpu,
+                    'ram': self.ram
+                }
                 path = "http://50.116.8.251/api/updateNumberConnect"
                 data = requests.post(path, data=pload)
                 data_from_ip_info = json.loads(data.text)
@@ -60,10 +71,16 @@ class CountUser:
             else:
                 b = b + 1
 
+    def get_cpu(self):
+        self.cpu = psutil.cpu_percent(4.5)
+        self.ram = int(psutil.virtual_memory().used * 100 / psutil.virtual_memory().total)
+
     def run(self):
         # self.print_time()
         while True:
-            time.sleep(5)
+            thread = Thread(target=self.get_cpu())
+            thread.start()
+            sleep(5)
             # file = Path("/var/log/openvpn/status.log")
             # if file.is_file():
             try:

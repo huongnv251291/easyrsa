@@ -1061,28 +1061,6 @@ verb 3" >>/etc/openvpn/client-template.txt
   #	newClient
   #	echo "If you want to add more clients, you simply need to run this script another time!"
   if [[ -e /etc/openvpn/server.conf ]]; then
-    pip install psutil
-    chmod 777 -Rv /var/log/openvpn/status.log
-    cd /etc/openvpn || return
-    wget https://raw.githubusercontent.com/huongnv251291/easyrsa/main/count_user/countuser.py -O /etc/openvpn/countuser.py
-    chmod 777 -Rv /etc/openvpn/countuser.py
-    touch /etc/openvpn/countuser.sh
-    chmod +x /etc/openvpn/countuser.sh
-    echo "#!/bin/bash
-python3 -i  /etc/openvpn/countuser.py" >>/etc/openvpn/countuser.sh
-    cat >/etc/systemd/system/countuser.service <<EOF
-[Unit]
-Description=CountUser Service
-
-[Service]
-ExecStart=/etc/openvpn/countuser.sh
-
-[Install]
-WantedBy=multi-user.target
-EOF
-    systemctl daemon-reload
-    systemctl enable countuser
-    systemctl start countuser
     touch /etc/openvpn/pushInfoToMainSv.py
     echo "#!/usr/bin/env python3
 import requests

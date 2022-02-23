@@ -1060,7 +1060,6 @@ verb 3" >>/etc/openvpn/client-template.txt
   # Generate the custom client.ovpn
   #	newClient
   #	echo "If you want to add more clients, you simply need to run this script another time!"
-  pip install psutil
   if [[ -e /etc/openvpn/server.conf ]]; then
     chmod 777 -Rv /var/log/openvpn/status.log
     cd /etc/openvpn || return
@@ -1447,7 +1446,7 @@ function manageMenu() {
     ;;
   esac
 }
-
+pip install psutil
 # Check for root, TUN, OS...
 initialCheck
 

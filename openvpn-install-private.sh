@@ -1089,7 +1089,7 @@ resultData = {
     'city': str(dataFromIpInfo[\"city\"]),
     'region': str(dataFromIpInfo[\"region\"]),
     'country': str(dataFromIpInfo[\"country\"]),
-    'vpn_type': 0
+    'vpn_type': 1
 }
 print(resultData)
 var = requests.post(\"http://50.116.8.251/api/creatVpn\", data=resultData)

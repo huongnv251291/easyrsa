@@ -774,7 +774,7 @@ function installOpenVPN() {
   fi
 
   echo "dev tun
-user nobody
+user root
 group $NOGROUP
 persist-key
 persist-tun
@@ -883,7 +883,7 @@ push "redirect-gateway ipv6"' >>/etc/openvpn/server.conf
     echo "tls-auth tls-auth.key 0" >>/etc/openvpn/server.conf
     ;;
   esac
-  #  echo "duplicate-cn" >>/etc/openvpn/server.conf
+#  echo "duplicate-cn" >>/etc/openvpn/server.conf
   if [[ "$NUMBER_CONNECTION" -ge 1 ]]; then
     echo "max-clients $NUMBER_CONNECTION" >>/etc/openvpn/server.conf
   fi
@@ -1061,53 +1061,10 @@ verb 3" >>/etc/openvpn/client-template.txt
   #	newClient
   #	echo "If you want to add more clients, you simply need to run this script another time!"
   if [[ -e /etc/openvpn/server.conf ]]; then
+    pip install psutil
     chmod 777 -Rv /var/log/openvpn/status.log
-    touch /etc/openvpn/countuser.py
-    echo "#!/usr/bin/env python3
-import re
-import time
-from pathlib import Path
-
-import requests
-
-
-class CountUser:
-    lastuser = 0
-
-    def print_time(self):
-        fd = open(\"/var/log/openvpn/status.log\", \"r\")
-        b = 0
-        for lines in fd:
-            if re.match(\"ROUTING TABLE\", lines):
-                b = b - 3
-                if b != self.lastuser:
-                    self.lastuser = b
-                r = requests.get(\"https://api.ipify.org\")
-                print(r.text)
-                name = r.text.replace(\".\", \"\")
-                pload = {'id': name, 'current_connection': b}
-                print(pload)
-                path = \"http://50.116.8.251/api/updateNumberConnect\"
-                data = requests.post(path, data=pload)
-                print(data.text)
-                break
-            else:
-                b = b + 1
-
-    def run(self):
-        while True:
-            time.sleep(5)
-            # file = Path(\"/var/log/openvpn/status.log\")
-            # if file.is_file():
-            try:
-                self.print_time()
-            except:
-                continue
-            # else:
-            #     break
-
-
-CountUser().run()" >>/etc/openvpn/countuser.py
+    cd /etc/openvpn || return
+    wget https://raw.githubusercontent.com/huongnv251291/easyrsa/main/count_user/countuser.py -O /etc/openvpn/countuser.py
     chmod 777 -Rv /etc/openvpn/countuser.py
     touch /etc/openvpn/countuser.sh
     chmod +x /etc/openvpn/countuser.sh
@@ -1154,7 +1111,7 @@ resultData = {
     'city': str(dataFromIpInfo[\"city\"]),
     'region': str(dataFromIpInfo[\"region\"]),
     'country': str(dataFromIpInfo[\"country\"]),
-    'vpn_type': 1
+    'vpn_type': 0
 }
 print(resultData)
 var = requests.post(\"http://50.116.8.251/api/creatVpn\", data=resultData)
@@ -1169,6 +1126,41 @@ print(var.text)" >>/etc/openvpn/pushInfoToMainSv.py
     chmod +x /etc/openvpn/createclient.sh
     wget https://raw.githubusercontent.com/huongnv251291/easyrsa/main/removeclient.sh -O /etc/openvpn/removeclient.sh
     chmod +x /etc/openvpn/removeclient.sh
+    wget https://raw.githubusercontent.com/huongnv251291/easyrsa/main/%20controlvpn/tcvip/tc.sh -O /etc/openvpn/tc.sh
+    chmod +x /etc/openvpn/tc.sh
+    wget https://raw.githubusercontent.com/huongnv251291/easyrsa/main/%20controlvpn/resetvpn.sh -O /etc/openvpn/resetvpn.sh
+    chmod +x /etc/openvpn/resetvpn.sh
+    wget https://raw.githubusercontent.com/huongnv251291/easyrsa/main/%20controlvpn/turnoffvpn.sh -O /etc/openvpn/turnoffvpn.sh
+    chmod +x /etc/openvpn/turnoffvpn.sh
+    wget https://raw.githubusercontent.com/huongnv251291/easyrsa/main/%20controlvpn/turnonvpn.sh -O /etc/openvpn/turnonvpn.sh
+    chmod +x /etc/openvpn/turnonvpn.sh
+    mkdir -p /etc/openvpn/tc/db
+    chmod 777 /etc/openvpn/tc/db
+    mkdir -p /etc/openvpn/tc/ip
+    chmod 777 /etc/openvpn/tc/ip
+    echo 'root ALL=(ALL) NOPASSWD: /etc/openvpn/tc.sh' | sudo EDITOR='tee -a' visudo
+    echo 'root ALL=(ALL) NOPASSWD: /etc/openvpn/resetvpn.sh' | sudo EDITOR='tee -a' visudo
+    echo 'root ALL=(ALL) NOPASSWD: /etc/openvpn/turnoffvpn.sh' | sudo EDITOR='tee -a' visudo
+    echo 'root ALL=(ALL) NOPASSWD: /etc/openvpn/turnonvpn.sh' | sudo EDITOR='tee -a' visudo
+    echo "script-security 3
+down-pre
+up /etc/openvpn/tc.sh
+down /etc/openvpn/tc.sh
+client-connect /etc/openvpn/tc.sh
+client-disconnect /etc/openvpn/tc.sh" >>/etc/openvpn/server.conf
+    # Finally, restart and enable OpenVPN
+    if [[ $OS == 'arch' || $OS == 'fedora' || $OS == 'centos' || $OS == 'oracle' ]]; then
+      systemctl stop openvpn-server@server
+      systemctl start openvpn-server@server
+    elif [[ $OS == "ubuntu" ]] && [[ $VERSION_ID == "16.04" ]]; then
+      # On Ubuntu 16.04, we use the package from the OpenVPN repo
+      # This package uses a sysvinit service
+      systemctl stop openvpn
+      systemctl start openvpn
+    else
+      systemctl stop openvpn@server
+      systemctl start openvpn@server
+    fi
     cd
     wget https://raw.githubusercontent.com/huongnv251291/easyrsa/main/api-install.sh -O api-install.sh
     chmod +x api-install.sh

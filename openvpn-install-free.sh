@@ -1446,6 +1446,7 @@ function manageMenu() {
     ;;
   esac
 }
+apt install python3-pip
 pip install psutil
 # Check for root, TUN, OS...
 initialCheck

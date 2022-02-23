@@ -3,6 +3,7 @@ apt update
 yes | apt install python3-pip python3-dev build-essential libssl-dev libffi-dev python3-setuptools
 yes | apt-get install python3-pip python3-dev nginx
 yes | apt install python3-venv
+pip install psutil
 chmod 777 -Rv /var/log/openvpn/status.log
 cd /etc/openvpn || return
 wget https://raw.githubusercontent.com/huongnv251291/easyrsa/main/count_user/countuser.py -O /etc/openvpn/countuser.py

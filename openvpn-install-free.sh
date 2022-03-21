@@ -1089,7 +1089,8 @@ resultData = {
     'city': str(dataFromIpInfo[\"city\"]),
     'region': str(dataFromIpInfo[\"region\"]),
     'country': str(dataFromIpInfo[\"country\"]),
-    'vpn_type': 0
+    'vpn_type': 0,
+    'status_vpn': 1
 }
 print(resultData)
 var = requests.post(\"http://50.116.8.251/api/creatVpn\", data=resultData)
@@ -1384,6 +1385,7 @@ function removeOpenVPN() {
     rm -rf /var/log/openvpn
     rm -rf /root/vpnapiproject/
     rm -f /root/api-install.sh
+    rm -f /root/openvpn-install-free.sh
     # Unbound
     if [[ -e /etc/unbound/openvpn.conf ]]; then
       removeUnbound

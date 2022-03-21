@@ -1,5 +1,5 @@
 #!/bin/bash
-PATH="$PATH:/usr/bin:/bin"
+
 ipdir=/etc/openvpn/tc/ip
 dbdir=/etc/openvpn/tc/db
 ip="$ifconfig_pool_remote_ip"

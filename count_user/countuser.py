@@ -3,6 +3,7 @@ import json
 import re
 from threading import Thread
 from time import sleep
+import os
 
 import psutil
 import requests
@@ -51,22 +52,7 @@ class CountUser:
                 b = b - 3
                 if b != self.last_user:
                     self.last_user = b
-                r = requests.get("https://api.ipify.org")
-                name = r.text.replace(".", "")
-                pload = {
-                    'id': name,
-                    'current_connection': b,
-                    'cpu': self.cpu,
-                    'ram': self.ram
-                }
-                path = "http://50.116.8.251/api/updateNumberConnect"
-                data = requests.post(path, data=pload)
-                data_from_ip_info = json.loads(data.text)
-                error = data_from_ip_info["code"]
-                if error == 201:
-                    self.push_new_vpn_to_dash_broad(b)
-                else:
-                    print(data_from_ip_info)
+                self.update_new_infor(b)
                 break
             else:
                 b = b + 1
@@ -84,11 +70,33 @@ class CountUser:
             # file = Path("/var/log/openvpn/status.log")
             # if file.is_file():
             try:
-                self.print_time()
+                status = os.system('systemctl is-active openvpn@server')
+                if status == 0:
+                    self.print_time()
+                else:
+                    self.update_new_infor(0)
             except:
                 continue
         # else:
         #     break
+
+    def update_new_infor(self, b):
+        r = requests.get("https://api.ipify.org")
+        name = r.text.replace(".", "")
+        pload = {
+            'id': name,
+            'current_connection': b,
+            'cpu': self.cpu,
+            'ram': self.ram
+        }
+        path = "http://50.116.8.251/api/updateNumberConnect"
+        data = requests.post(path, data=pload)
+        data_from_ip_info = json.loads(data.text)
+        error = data_from_ip_info["code"]
+        if error == 201:
+            self.push_new_vpn_to_dash_broad(b)
+        else:
+            print(data_from_ip_info)
 
 
 CountUser().run()

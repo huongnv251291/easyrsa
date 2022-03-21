@@ -168,11 +168,19 @@ def resetvpn():
 
 
 def actionvpn(action):
-    return {
-        0: subprocess.run(['/etc/openvpn/resetvpn.sh'], stdout=subprocess.PIPE).stdout,
-        1: subprocess.run(['/etc/openvpn/turnoffvpn.sh'], stdout=subprocess.PIPE).stdout,
-        2: subprocess.run(['/etc/openvpn/turnonvpn.sh'], stdout=subprocess.PIPE).stdout
-    }.get(action, "")
+    print("actionvpn : " + str(action))
+    if action == 0:
+        return subprocess.run(['/etc/openvpn/resetvpn.sh'], stdout=subprocess.PIPE).stdout
+    if action == 1:
+        return subprocess.run(['/etc/openvpn/turnoffvpn.sh'], stdout=subprocess.PIPE).stdout
+    if action == 2:
+        return subprocess.run(['/etc/openvpn/turnonvpn.sh'], stdout=subprocess.PIPE).stdout
+
+    # return {
+    #     0: ,
+    #     1: ,
+    #     2:
+    # }.get(action, "")
 
 
 def makejsonuser(line):
@@ -194,25 +202,32 @@ def makejsonuser(line):
 
 @app.route('/v1.0/tasks/listuseronline', methods=['GET'])
 def getlistuseronline():
-    telnet = telnetlib.Telnet(host, port, 5)
-    command = "status 2" + enter
-    telnet.write(command.encode("ascii"))
-    outputs = telnet.expect(["END\r".encode("ascii")], 1)
-    output = outputs[len(outputs) - 1]
-    list_value = output.split(enter.encode("ascii"))
-    listuser = []
-    for i in list_value:
-        line = str(i).split("\'")[1].replace("\\r", "")
-        print(line)
-        if line.startswith("CLIENT_LIST,"):
-            listuser.append(makejsonuser(line))
-        if line.startswith("HEADER,ROUTING_TABLE,"):
-            break
-    profile = {
-        'code': 0,
-        'message': "OK",
-        'data': listuser
-    }
+    try:
+        telnet = telnetlib.Telnet(host, port, 5)
+        command = "status 2" + enter
+        telnet.write(command.encode("ascii"))
+        outputs = telnet.expect(["END\r".encode("ascii")], 1)
+        output = outputs[len(outputs) - 1]
+        list_value = output.split(enter.encode("ascii"))
+        listuser = []
+        for i in list_value:
+            line = str(i).split("\'")[1].replace("\\r", "")
+            print(line)
+            if line.startswith("CLIENT_LIST,"):
+                listuser.append(makejsonuser(line))
+            if line.startswith("HEADER,ROUTING_TABLE,"):
+                break
+        profile = {
+            'code': 0,
+            'message': "OK",
+            'data': listuser
+        }
+    except:
+        profile = {
+            'code': 0,
+            'message': "Error when get list user maybe server not available contact to admin for support",
+            'data': []
+        }
     return jsonify(profile)
 
 

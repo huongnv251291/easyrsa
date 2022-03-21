@@ -24,7 +24,7 @@ class CountUser:
             if lines.startswith("max-clients"):
                 self.max_current_connection = lines.split()[1]
 
-    def push_new_vpn_to_dash_broad(self, b):
+    def push_new_vpn_to_dash_broad(self, b, isserverrunning):
         self.read_config()
         r = requests.get("https://ipinfo.io/json")
         data_from_ip_info = json.loads(r.text)
@@ -40,8 +40,10 @@ class CountUser:
             'country': str(data_from_ip_info["country"]),
             'vpn_type': self.vpn_type,
             'cpu': self.cpu,
-            'ram': self.ram
+            'ram': self.ram,
+            'status_vpn': isserverrunning
         }
+        print(result_data)
         requests.post("http://50.116.8.251/api/creatVpn", data=result_data)
 
     def print_time(self):
@@ -52,7 +54,7 @@ class CountUser:
                 b = b - 3
                 if b != self.last_user:
                     self.last_user = b
-                self.update_new_infor(b)
+                self.update_new_infor(b, 1)
                 break
             else:
                 b = b + 1
@@ -74,27 +76,28 @@ class CountUser:
                 if status == 0:
                     self.print_time()
                 else:
-                    self.update_new_infor(0)
+                    self.update_new_infor(0, 0)
             except:
                 continue
         # else:
         #     break
 
-    def update_new_infor(self, b):
+    def update_new_infor(self, b, isserverrunning):
         r = requests.get("https://api.ipify.org")
         name = r.text.replace(".", "")
         pload = {
             'id': name,
             'current_connection': b,
             'cpu': self.cpu,
-            'ram': self.ram
+            'ram': self.ram,
+            'status_vpn': isserverrunning
         }
         path = "http://50.116.8.251/api/updateNumberConnect"
         data = requests.post(path, data=pload)
         data_from_ip_info = json.loads(data.text)
         error = data_from_ip_info["code"]
         if error == 201:
-            self.push_new_vpn_to_dash_broad(b)
+            self.push_new_vpn_to_dash_broad(b, isserverrunning)
         else:
             print(data_from_ip_info)
 

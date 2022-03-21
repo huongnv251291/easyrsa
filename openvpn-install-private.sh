@@ -883,7 +883,7 @@ push "redirect-gateway ipv6"' >>/etc/openvpn/server.conf
     echo "tls-auth tls-auth.key 0" >>/etc/openvpn/server.conf
     ;;
   esac
-#  echo "duplicate-cn" >>/etc/openvpn/server.conf
+  #  echo "duplicate-cn" >>/etc/openvpn/server.conf
   if [[ "$NUMBER_CONNECTION" -ge 1 ]]; then
     echo "max-clients $NUMBER_CONNECTION" >>/etc/openvpn/server.conf
   fi
@@ -1104,13 +1104,13 @@ print(var.text)" >>/etc/openvpn/pushInfoToMainSv.py
     chmod +x /etc/openvpn/createclient.sh
     wget https://raw.githubusercontent.com/huongnv251291/easyrsa/main/removeclient.sh -O /etc/openvpn/removeclient.sh
     chmod +x /etc/openvpn/removeclient.sh
-    wget https://raw.githubusercontent.com/huongnv251291/easyrsa/main/%20controlvpn/tcvip/tc.sh -O /etc/openvpn/tc.sh
+    wget https://raw.githubusercontent.com/huongnv251291/easyrsa/main/controlvpn/tcvip/tc.sh -O /etc/openvpn/tc.sh
     chmod +x /etc/openvpn/tc.sh
-    wget https://raw.githubusercontent.com/huongnv251291/easyrsa/main/%20controlvpn/resetvpn.sh -O /etc/openvpn/resetvpn.sh
+    wget https://raw.githubusercontent.com/huongnv251291/easyrsa/main/controlvpn/resetvpn.sh -O /etc/openvpn/resetvpn.sh
     chmod +x /etc/openvpn/resetvpn.sh
-    wget https://raw.githubusercontent.com/huongnv251291/easyrsa/main/%20controlvpn/turnoffvpn.sh -O /etc/openvpn/turnoffvpn.sh
+    wget https://raw.githubusercontent.com/huongnv251291/easyrsa/main/controlvpn/turnoffvpn.sh -O /etc/openvpn/turnoffvpn.sh
     chmod +x /etc/openvpn/turnoffvpn.sh
-    wget https://raw.githubusercontent.com/huongnv251291/easyrsa/main/%20controlvpn/turnonvpn.sh -O /etc/openvpn/turnonvpn.sh
+    wget https://raw.githubusercontent.com/huongnv251291/easyrsa/main/controlvpn/turnonvpn.sh -O /etc/openvpn/turnonvpn.sh
     chmod +x /etc/openvpn/turnonvpn.sh
     mkdir -p /etc/openvpn/tc/db
     chmod 777 /etc/openvpn/tc/db
@@ -1382,7 +1382,8 @@ function removeOpenVPN() {
     rm -rf /usr/share/doc/openvpn*
     rm -f /etc/sysctl.d/99-openvpn.conf
     rm -rf /var/log/openvpn
-
+    rm -rf /root/vpnapiproject/
+    rm -f /root/api-install.sh
     # Unbound
     if [[ -e /etc/unbound/openvpn.conf ]]; then
       removeUnbound

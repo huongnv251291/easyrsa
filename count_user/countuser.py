@@ -72,11 +72,12 @@ class CountUser:
             # file = Path("/var/log/openvpn/status.log")
             # if file.is_file():
             try:
-                status = os.system('systemctl is-active openvpn@server')
-                if status == 0:
-                    self.print_time()
-                else:
-                    self.update_new_infor(0, 0)
+                self.print_time()
+                # status = os.system('systemctl is-active openvpn@server')
+                # if status == 0:
+                #     self.print_time()
+                # else:
+                #     self.update_new_infor(0, 0)
             except:
                 continue
         # else:

@@ -5,7 +5,7 @@ from os.path import exists
 
 if __name__ == "__main__":
     listData = []
-    my_file_handle = open('C://Users//TOH_Android//Downloads//serverbackup.json')
+    my_file_handle = open('C://Users//choco//Downloads//serverbackup.json')
     data = json.load(my_file_handle)
     num_threads = 2 * multiprocessing.cpu_count()
     with multiprocessing.Pool(num_threads) as pool:

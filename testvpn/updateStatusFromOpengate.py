@@ -1,12 +1,11 @@
+import base64
 import json
 import multiprocessing
 import os
 import time
+from os.path import exists
 
 import requests
-from OpenVpn import OpenVpn
-from os.path import exists
-import base64
 
 
 def ping(i):
@@ -42,20 +41,20 @@ if __name__ == "__main__":
         datas = line.split(",")
         if len(datas) == 15 and counter > startLine:
             listData.append(
-                {'id': datas[1].replace('.', '', ),
-                 'host_name': datas[0],
+                {'id': str(datas[1].replace('.', '', )),
+                 'host_name': 'vpn'+str(datas[1].replace('.', '', )),
                  'ip': datas[1],
                  'current_connection': datas[9],
                  'max_connection': 0,
-                 'city': datas[5],
-                 'country': datas[6],
+                 'city': str(datas[5]),
+                 'country': str(datas[6]),
                  'vpn_type': 0,
                  'cpu': 0,
                  'ram': 0,
                  'lastTimeSync': int(time.time() * 1000),
                  'online': 1,
-                 'source': 0,
-                 'config': datas[14]})
+                 'source': 1,
+                 'config': str(datas[14])})
         counter = counter + 1
     dataServerLive = []
     print(len(listData))

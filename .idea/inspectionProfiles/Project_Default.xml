@@ -3,7 +3,7 @@
     <option name="myName" value="Project Default" />
     <inspection_tool class="DuplicatedCode" enabled="true" level="WEAK WARNING" enabled_by_default="true">
       <Languages>
-        <language minSize="118" name="Python" />
+        <language minSize="228" name="Python" />
       </Languages>
     </inspection_tool>
     <inspection_tool class="HttpUrlsUsage" enabled="true" level="WEAK WARNING" enabled_by_default="true">
@@ -49,6 +49,7 @@
       <option name="ignoredErrors">
         <list>
           <option value="N803" />
+          <option value="N802" />
         </list>
       </option>
     </inspection_tool>

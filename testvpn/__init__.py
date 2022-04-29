@@ -4,9 +4,10 @@ import multiprocessing
 import os
 import time
 from os.path import exists
-
-import AES as AES
 import requests
+from Crypto.Cipher import AES
+import ssl
+import urllib3
 
 block_size = AES.block_size
 enter = "\n"
@@ -72,8 +73,10 @@ def ping(i):
         if 'region' in data_from_ip_info:
             i['city'] = str(data_from_ip_info['region'])
         print(i['config'])
-        dataOrigin = i['config'].replace("\n", "")
-        i['config'] =
+        originData = str(base64.b64decode(i['config']))
+        encrypt_data = encryptToBase64(keyEncrypt, ivEncrypt, originData)
+        encrypt_data = encrypt_data.replace("\n", "")
+        i['config'] = encrypt_data
         print(i)
         print(f"UP {ip} Ping Successful")
         return i
@@ -114,6 +117,10 @@ if __name__ == "__main__":
         'data': listData,
     }
     print(result_data)
+    urllib3.disable_warnings()
+    res = requests.post("https://159.223.61.22/api/creatVpnFromList", data=result_data, verify=False)
+    print(res)
+    print(res.text)
     # print("server live :" + str(len(listData)))
     # file_exists = exists('E://server_other_live.json')
     # print(file_exists)

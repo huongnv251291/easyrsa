@@ -3,11 +3,9 @@ import json
 import multiprocessing
 import os
 import time
-from os.path import exists
+
 import requests
 from Crypto.Cipher import AES
-import ssl
-import urllib3
 
 block_size = AES.block_size
 enter = "\n"
@@ -73,7 +71,7 @@ def ping(i):
         if 'region' in data_from_ip_info:
             i['city'] = str(data_from_ip_info['region'])
         print(i['config'])
-        originData = str(base64.b64decode(i['config']))
+        originData = str(base64.b64decode(i['config']).decode("utf-8"))
         encrypt_data = encryptToBase64(keyEncrypt, ivEncrypt, originData)
         encrypt_data = encrypt_data.replace("\n", "")
         i['config'] = encrypt_data
@@ -87,7 +85,7 @@ def ping(i):
 
 if __name__ == "__main__":
     listData = []
-    my_file_handle = open('C://Users//choco//Downloads//serverbackup.json')
+    my_file_handle = open('C://Users//TOH_Android//Downloads//serverbackup.json')
     data = json.load(my_file_handle)
     listConvert = []
     for item in data:
@@ -99,7 +97,7 @@ if __name__ == "__main__":
              'max_connection': 0,
              'city': str(item['CountryLong']),
              'country': str(item['CountryShort']),
-             'vpn_type': 1,
+             'vpn_type': 0,
              'cpu': 0,
              'ram': 0,
              'lastTimeSync': int(time.time() * 1000),
@@ -117,8 +115,7 @@ if __name__ == "__main__":
         'data': listData,
     }
     print(result_data)
-    urllib3.disable_warnings()
-    res = requests.post("https://159.223.61.22/api/creatVpnFromList", data=result_data, verify=False)
+    res = requests.post("http://159.223.61.22/api/creatVpnFromList", json=result_data)
     print(res)
     print(res.text)
     # print("server live :" + str(len(listData)))

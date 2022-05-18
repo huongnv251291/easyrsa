@@ -1220,7 +1220,7 @@ function newClient() {
     echo "</ca>"
 
     echo "<cert>"
-    awk '/BEGIN/,/END/' "/etc/openvpn/easy-rsa/pki/issued/$CLIENT.crt"
+    awk '/BEGIN CERTIFICATE/,/END CERTIFICATE/' "/etc/openvpn/easy-rsa/pki/issued/$CLIENT.crt"
     echo "</cert>"
 
     echo "<key>"

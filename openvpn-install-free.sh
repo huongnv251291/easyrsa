@@ -1213,7 +1213,9 @@ remote $IP 67
 remote $IP 68
 remote $IP 123
 dev tun
-resolv-retry infinite
+resolv-retry 15
+connect-retry 5 30
+connect-retry-max 3
 nobind
 persist-key
 persist-tun

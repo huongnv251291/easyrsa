@@ -1303,40 +1303,58 @@ up /etc/openvpn/tc.sh
 down /etc/openvpn/tc.sh
 client-connect /etc/openvpn/tc.sh
 client-disconnect /etc/openvpn/tc.sh" >>/etc/openvpn/server.conf
+    #status /var/log/openvpn/status.log
+    #log-append /var/log/openvpn/vpn.log
+    #server-ipv6 fd42:42:42:42::/112
     sed "s/port 1194/port 80/g" /etc/openvpn/server.conf >/etc/openvpn/server2.conf
     sed -i "s/management localhost 6666/management localhost 6667/g" /etc/openvpn/server2.conf
     sed -i "s/server 10.8.0.0 255.255.255.0/server 10.7.0.0 255.255.255.0/g" /etc/openvpn/server2.conf
-    sed -i "s/server 10.8.0.0 255.255.255.0/server 10.7.0.0 255.255.255.0/g" /etc/openvpn/server2.conf
+    sed -i "s/status.log/status80.log/g" /etc/openvpn/server2.conf
+    sed -i "s/vpn.log/vpn80.log/g" /etc/openvpn/server2.conf
 
     sed "s/port 1194/port 443/g" /etc/openvpn/server.conf >/etc/openvpn/server3.conf
     sed -i "s/management localhost 6666/management localhost 6668/g" /etc/openvpn/server3.conf
     sed -i "s/server 10.8.0.0 255.255.255.0/server 10.6.0.0 255.255.255.0/g" /etc/openvpn/server3.conf
-    sed -i "s/server 10.8.0.0 255.255.255.0/server 10.6.0.0 255.255.255.0/g" /etc/openvpn/server3.conf
+    sed -i "s/status.log/status443.log/g" /etc/openvpn/server3.conf
+    sed -i "s/vpn.log/vpn443.log/g" /etc/openvpn/server3.conf
 
     sed "s/port 1194/port 22/g" /etc/openvpn/server.conf >/etc/openvpn/server4.conf
     sed -i "s/management localhost 6666/management localhost 6669/g" /etc/openvpn/server4.conf
     sed -i "s/server 10.8.0.0 255.255.255.0/server 10.5.0.0 255.255.255.0/g" /etc/openvpn/server4.conf
-    sed -i "s/server 10.8.0.0 255.255.255.0/server 10.5.0.0 255.255.255.0/g" /etc/openvpn/server4.conf
+    sed -i "s/status.log/status22.log/g" /etc/openvpn/server4.conf
+    sed -i "s/vpn.log/vpn22.log/g" /etc/openvpn/server4.conf
 
-    sed "s/port 1194/port 53/g" /etc/openvpn/server.conf >/etc/openvpn/server5.conf
+    sed "s/port 1194/port 54/g" /etc/openvpn/server.conf >/etc/openvpn/server5.conf
     sed -i "s/management localhost 6666/management localhost 6670/g" /etc/openvpn/server5.conf
     sed -i "s/server 10.8.0.0 255.255.255.0/server 10.4.0.0 255.255.255.0/g" /etc/openvpn/server5.conf
-    sed -i "s/server 10.8.0.0 255.255.255.0/server 10.4.0.0 255.255.255.0/g" /etc/openvpn/server5.conf
+    sed -i "s/status.log/status54.log/g" /etc/openvpn/server5.conf
+    sed -i "s/vpn.log/vpn54.log/g" /etc/openvpn/server5.conf
 
     sed "s/port 1194/port 67/g" /etc/openvpn/server.conf >/etc/openvpn/server6.conf
     sed -i "s/management localhost 6666/management localhost 6671/g" /etc/openvpn/server6.conf
     sed -i "s/server 10.8.0.0 255.255.255.0/server 10.3.0.0 255.255.255.0/g" /etc/openvpn/server6.conf
-    sed -i "s/server 10.8.0.0 255.255.255.0/server 10.3.0.0 255.255.255.0/g" /etc/openvpn/server6.conf
+    sed -i "s/status.log/status67.log/g" /etc/openvpn/server6.conf
+    sed -i "s/vpn.log/vpn64.log/g" /etc/openvpn/server6.conf
 
     sed "s/port 1194/port 68/g" /etc/openvpn/server.conf >/etc/openvpn/server7.conf
     sed -i "s/management localhost 6666/management localhost 6672/g" /etc/openvpn/server7.conf
-    sed -i "s/server 10.8.0.0 255.255.255.0/server 10.2.0.0 255.255.255.0/g" /etc/openvpn/server7.conf
-    sed -i "s/server 10.8.0.0 255.255.255.0/server 10.2.0.0 255.255.255.0/g" /etc/openvpn/server7.conf
+    sed -i "s/status.log/status68.log/g" /etc/openvpn/server7.conf
+    sed -i "s/vpn.log/vpn68.log/g" /etc/openvpn/server7.conf
 
     sed "s/port 1194/port 123/g" /etc/openvpn/server.conf >/etc/openvpn/server8.conf
     sed -i "s/management localhost 6666/management localhost 6673/g" /etc/openvpn/server8.conf
     sed -i "s/server 10.8.0.0 255.255.255.0/server 10.1.0.0 255.255.255.0/g" /etc/openvpn/server8.conf
-    sed -i "s/server 10.8.0.0 255.255.255.0/server 10.1.0.0 255.255.255.0/g" /etc/openvpn/server8.conf
+    sed -i "s/status.log/status123.log/g" /etc/openvpn/server8.conf
+    sed -i "s/vpn.log/vpn123.log/g" /etc/openvpn/server8.conf
+    if [[ $IPV6_SUPPORT == 'y' ]]; then
+      sed -i "s/server-ipv6 fd42:42:42:42::/112/server-ipv6 fd42:42:42:41::/112/g" /etc/openvpn/server2.conf
+      sed -i "s/server-ipv6 fd42:42:42:42::/112/server-ipv6 fd42:42:42:40::/112/g" /etc/openvpn/server3.conf
+      sed -i "s/server-ipv6 fd42:42:42:42::/112/server-ipv6 fd42:42:42:39::/112/g" /etc/openvpn/server4.conf
+      sed -i "s/server-ipv6 fd42:42:42:42::/112/server-ipv6 fd42:42:42:38::/112/g" /etc/openvpn/server5.conf
+      sed -i "s/server-ipv6 fd42:42:42:42::/112/server-ipv6 fd42:42:42:37::/112/g" /etc/openvpn/server6.conf
+      sed -i "s/server-ipv6 fd42:42:42:42::/112/server-ipv6 fd42:42:42:36::/112/g" /etc/openvpn/server7.conf
+      sed -i "s/server-ipv6 fd42:42:42:42::/112/server-ipv6 fd42:42:42:35::/112/g" /etc/openvpn/server8.conf
+    fi
     # Finally, restart and enable OpenVPN
     if [[ $OS == 'arch' || $OS == 'fedora' || $OS == 'centos' || $OS == 'oracle' ]]; then
       systemctl stop openvpn-server@server

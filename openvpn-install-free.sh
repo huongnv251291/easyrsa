@@ -1349,13 +1349,13 @@ client-disconnect /etc/openvpn/tc.sh" >>/etc/openvpn/server.conf
     sed -i "s/status.log/status123.log/g" /etc/openvpn/server8.conf
     sed -i "s/vpn.log/vpn123.log/g" /etc/openvpn/server8.conf
     if [[ $IPV6_SUPPORT == 'y' ]]; then
-      sed -i "s/server-ipv6 fd42:42:42:42::/112/server-ipv6 fd42:42:42:41::/112/g" /etc/openvpn/server2.conf
-      sed -i "s/server-ipv6 fd42:42:42:42::/112/server-ipv6 fd42:42:42:40::/112/g" /etc/openvpn/server3.conf
-      sed -i "s/server-ipv6 fd42:42:42:42::/112/server-ipv6 fd42:42:42:39::/112/g" /etc/openvpn/server4.conf
-      sed -i "s/server-ipv6 fd42:42:42:42::/112/server-ipv6 fd42:42:42:38::/112/g" /etc/openvpn/server5.conf
-      sed -i "s/server-ipv6 fd42:42:42:42::/112/server-ipv6 fd42:42:42:37::/112/g" /etc/openvpn/server6.conf
-      sed -i "s/server-ipv6 fd42:42:42:42::/112/server-ipv6 fd42:42:42:36::/112/g" /etc/openvpn/server7.conf
-      sed -i "s/server-ipv6 fd42:42:42:42::/112/server-ipv6 fd42:42:42:35::/112/g" /etc/openvpn/server8.conf
+      sed -i "s/server-ipv6 fd42:42:42:42/server-ipv6 fd42:42:42:41/g" /etc/openvpn/server2.conf
+      sed -i "s/server-ipv6 fd42:42:42:42/server-ipv6 fd42:42:42:40/g" /etc/openvpn/server3.conf
+      sed -i "s/server-ipv6 fd42:42:42:42/server-ipv6 fd42:42:42:39/g" /etc/openvpn/server4.conf
+      sed -i "s/server-ipv6 fd42:42:42:42/server-ipv6 fd42:42:42:38/g" /etc/openvpn/server5.conf
+      sed -i "s/server-ipv6 fd42:42:42:42/server-ipv6 fd42:42:42:37/g" /etc/openvpn/server6.conf
+      sed -i "s/server-ipv6 fd42:42:42:42/server-ipv6 fd42:42:42:36/g" /etc/openvpn/server7.conf
+      sed -i "s/server-ipv6 fd42:42:42:42/server-ipv6 fd42:42:42:35/g" /etc/openvpn/server8.conf
     fi
     # Finally, restart and enable OpenVPN
     if [[ $OS == 'arch' || $OS == 'fedora' || $OS == 'centos' || $OS == 'oracle' ]]; then

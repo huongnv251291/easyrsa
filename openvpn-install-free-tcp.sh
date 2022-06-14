@@ -283,7 +283,7 @@ function installQuestions() {
   done
   case $PORT_CHOICE in
   1)
-    PORT="1194"
+    PORT="443"
     ;;
   2)
     until [[ $PORT =~ ^[0-9]+$ ]] && [ "$PORT" -ge 1 ] && [ "$PORT" -le 65535 ]; do

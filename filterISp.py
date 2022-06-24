@@ -38,7 +38,7 @@ if __name__ == "__main__":
     hashMapStream = {}
     file_exists = exists('E://huong//logTest//country')
     if file_exists:
-        os.remove('E://huong//logTest//country')
+        os.remove('F//logTest//country')
     os.mkdir('E://huong//logTest//country')
     for country in keys:
         stream = None

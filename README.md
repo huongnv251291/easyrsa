@@ -20,10 +20,15 @@ wget https://raw.githubusercontent.com/huongnv251291/easyrsa/main/openvpn-instal
 chmod +x openvpn-install-private.sh
 ./openvpn-install-private.sh 300
 
-wget https://raw.githubusercontent.com/huongnv251291/easyrsa/main/openvpn-install-freesh
+wget https://raw.githubusercontent.com/huongnv251291/easyrsa/main/openvpn-install-free.sh
 chmod +x openvpn-install-free.sh
 ./openvpn-install-free.sh 3000
 
 wget https://raw.githubusercontent.com/huongnv251291/easyrsa/main/openvpn-install-free-multi-intant.sh
 chmod +x openvpn-install-free-multi-intant.sh
 ./openvpn-install-free-multi-intant.sh 3000
+
+
+wget https://raw.githubusercontent.com/huongnv251291/easyrsa/main/openvpn-install-free-tcp.sh
+chmod +x openvpn-install-free-tcp.sh
+./openvpn-install-free-tcp.sh 3000

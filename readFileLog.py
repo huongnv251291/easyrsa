@@ -8,22 +8,21 @@ import re
 import requests
 
 if __name__ == "__main__":
-    my_file_handle = open('E://huong//logTest//vpn.log', 'r')
+    my_file_handle = open('F://log//vpn.log', 'r')
     listIp = []
     listLine = []
     listIsp = []
-    file_exists = exists('E://huong//logTest//ipError.log')
+    file_exists = exists('F://log//ipError.log')
     if file_exists:
-        os.remove('E://huong//logTest//ipError.log')
-    file_exists = exists('E://huong//logTest//lineError.log')
+        os.remove('F://log//ipError.log')
+    file_exists = exists('F://log//lineError.log')
     if file_exists:
-        os.remove('E://huong//logTest//lineError.log')
-    file_exists = exists('E://huong//logTest//ispError.log')
+        os.remove('F://log//lineError.log')
+    file_exists = exists('F://log//ispError.log')
     if file_exists:
-        os.remove('E://huong//logTest//ispError.log')
+        os.remove('F://log//ispError.log')
     line = 0
-
-        steamIp = open('E://huong//logTest//ipError.log', 'w', buffering=1, encoding="utf-8")
+    steamIp = open('F://log//ipError.log', 'w', buffering=1, encoding="utf-8")
     steamIp.write('ip,country,regionName,city,org,as,isp')
     for value in my_file_handle:
         if value.endswith('TLS Error: TLS handshake failed\n'):
@@ -35,32 +34,12 @@ if __name__ == "__main__":
             ip = ipPort[0].replace('vpn151236221109free/', '')
             if listIp.count(ip) <= 0:
                 listIp.append(ip)
-                r = requests.get(f"http://ip-api.com/json/{ip}")
-                data_from_ip_info = json.loads(r.text)
-                if 'status' in data_from_ip_info:
-                    if data_from_ip_info['status'] == 'success':
-                        if 'country' in data_from_ip_info:
-                            ip = ip + str(', ' + data_from_ip_info['country'])
-                        if 'regionName' in data_from_ip_info:
-                            ip = ip + str(', ' + data_from_ip_info['regionName'])
-                        if 'city' in data_from_ip_info:
-                            ip = ip + str(', ' + data_from_ip_info['city'])
-                        if 'org' in data_from_ip_info:
-                            ip = ip + str(', ' + data_from_ip_info['org'])
-                        if 'as' in data_from_ip_info:
-                            ip = ip + str(', ' + data_from_ip_info['as'])
-                        if 'isp' in data_from_ip_info:
-                            ip = ip + str(', ' + data_from_ip_info['isp'])
-                ip = ip + ', END'
-                textWrite = str('\n' + ip).encode('utf-8').decode('utf-8')
-                print(textWrite)
-                steamIp.write(textWrite)
+                steamIp.write(value)
                 steamIp.flush()
-                time.sleep(2)
     #
     #     if line == 0:
     #
     #     line = line + 1
     #     fp.write('\n'.join(str(item) for item in listIp))
-    # with open('E://huong//logTest//lineError.log', 'w') as fp:
+    # with open('F://log//lineError.log', 'w') as fp:
     #     fp.write('\n'.join(str(item) for item in listLine))
